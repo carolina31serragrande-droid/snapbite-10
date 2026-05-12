@@ -1,0 +1,37 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{width:100%;display:flex;align-items:stretch;background:#1A0A0E}
+.qr-side{background:#C1102B;padding:20px 22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-right:2px solid #E8C97A}
+.card-inner{display:flex;flex-direction:column;align-items:center}
+.card-top{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.dot{width:6px;height:6px;border-radius:50%;background:#E8C97A;opacity:.8}
+.speaker{width:42px;height:6px;border-radius:4px;background:#A50D22}
+.qr-box{background:#F5E1C0;border-radius:8px;padding:8px;border:2px solid #E8C97A}
+#qrcode canvas,#qrcode img{display:block;border-radius:3px}
+.stars{display:flex;gap:5px;margin:8px 0 4px;justify-content:center;color:#E8C97A;font-size:11px}
+.scan{color:#F5E1C0;font-family:'Playfair Display',serif;font-size:18px;letter-spacing:3px;text-align:center}
+.dark-side{flex:1;background:#1A0A0E}
+</style>
+<div class="wrap">
+  <div class="qr-side">
+    <div class="card-inner">
+      <div class="card-top"><div class="dot"></div><div class="speaker"></div></div>
+      <div class="qr-box"><div id="qrcode"></div></div>
+      <div class="stars"><span>✦</span><span>★</span><span>✦</span></div>
+      <div class="scan">SCAN ME</div>
+    </div>
+  </div>
+  <div class="dark-side"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+new QRCode(document.getElementById("qrcode"),{
+  text:"https://youtu.be/BOs4E-cmMwk?si=LLavuZNHi1IRJGWg",
+  width:180,height:180,
+  colorDark:"#2E0D1C",
+  colorLight:"#F5E1C0",
+  correctLevel:QRCode.CorrectLevel.H
+});
+</script>

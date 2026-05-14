@@ -396,10 +396,10 @@ async function recuperarSenha(email) {
   try {
     const urlRecuperacao = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`;
 
-await sendPasswordResetEmail(auth, email, {
-  url: urlRecuperacao,
-  handleCodeInApp: true
-});
+    await sendPasswordResetEmail(auth, email, {
+      url: `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`,
+      handleCodeInApp: true
+    });
     return { ok: true };
   } catch (err) {
     console.error('Erro ao enviar recuperação de senha:', err);

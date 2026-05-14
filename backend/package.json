@@ -19,5 +19,10 @@
   "version": "1.0.0",
   "scripts": {
   "dev": "nodemon server.js"
-    }
+    },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "helmet": "^8.1.0"
+  }
 }

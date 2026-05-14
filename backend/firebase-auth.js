@@ -397,8 +397,8 @@ async function recuperarSenha(email) {
     const urlRecuperacao = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`;
 
 await sendPasswordResetEmail(auth, email, {
-  url: "https://carolina31serragrande-droid.github.io/snapbite-8/recuperar-senha.html",
-  handleCodeInApp: false
+  url: urlRecuperacao,
+  handleCodeInApp: true
 });
     return { ok: true };
   } catch (err) {

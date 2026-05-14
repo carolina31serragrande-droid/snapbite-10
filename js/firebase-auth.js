@@ -349,8 +349,8 @@ async function recuperarSenha(email) {
   }
   try {
     await sendPasswordResetEmail(auth, email, {
-      url: 'https://carolina31serragrande-droid.github.io/snapbite-8/recuperar-senha.html',
-      handleCodeInApp: false
+      url: `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`,
+      handleCodeInApp: true
     });
     registerResetAttempt();
     return { ok: true };

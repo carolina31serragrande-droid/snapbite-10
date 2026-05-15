@@ -2,6 +2,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebas
 import {
   getAuth,
   GoogleAuthProvider,
+  OAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -21,6 +22,7 @@ import {
   linkWithCredential
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 
+const microsoftProvider = new OAuthProvider('microsoft.com');
 const TEMPO_BLOQUEIO = 30 * 60 * 1000; // 30 minutos
 
 const firebaseConfig = {

@@ -21,6 +21,8 @@ import {
   linkWithCredential
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 
+const TEMPO_BLOQUEIO = 30 * 60 * 1000; // 30 minutos
+
 const firebaseConfig = {
   apiKey:            "AIzaSyCPQuK79XDc8B5bgr8tVSUwcLkSHlVJU6c",
   authDomain:        "snapbite-85943.firebaseapp.com",
@@ -174,6 +176,29 @@ function initCadastroExtra() {
       if (senha.length < 6) { window.showToast?.('Senha com mínimo 6 caracteres.', 'warning'); return; }
       if (senha !== senhaConf) { window.showToast?.('As senhas não coincidem.', 'warning'); return; }
     }
+
+    function bloquearLogin(email) {
+      const bloqueadoAte = Date.now() + TEMPO_BLOQUEIO;
+    
+      localStorage.setItem(
+        `bloqueio_${email}`,
+        bloqueadoAte
+      );
+    }
+    
+    function loginBloqueado(email) {
+      const bloqueio = localStorage.getItem(`bloqueio_${email}`);
+    
+      if (!bloqueio) return false;
+    
+      if (Date.now() > Number(bloqueio)) {
+        localStorage.removeItem(`bloqueio_${email}`);
+        return false;
+      }
+    
+      return true;
+    }
+
     if (!aceitouTermos) { window.showToast?.('Aceite os termos para continuar.', 'warning'); return; }
 
     try {
@@ -257,6 +282,13 @@ async function loginComEmailSenha(email, senha, lembrar = false) {
     await setPersistence(auth, lembrar ? browserLocalPersistence : browserSessionPersistence);
     if (lembrar) localStorage.setItem('snapbite_lembrar', '1');
     else         localStorage.removeItem('snapbite_lembrar');
+  
+    if (loginBloqueado(email)) {
+      return {
+        ok: false,
+        msg: 'Muitas tentativas. Aguarde 30 minutos para tentar novamente.'
+      };
+    }
 
     const result  = await signInWithEmailAndPassword(auth, email, senha);
     const usuario = syncUsuarioFirebase(result.user);
@@ -269,16 +301,26 @@ async function loginComEmailSenha(email, senha, lembrar = false) {
     _redirecionarAposLogin();
     return { ok: true };
   } catch (err) {
-    const msgs = {
-      'auth/user-not-found':     'E-mail não encontrado.',
-      'auth/wrong-password':     'Senha incorreta.',
-      'auth/invalid-email':      'E-mail inválido.',
-      'auth/invalid-credential': 'E-mail ou senha incorretos. Se você entrou com Google antes, use o botão "Entrar com Google".',
-      'auth/too-many-requests':  'Muitas tentativas. Tente mais tarde.',
+
+    if (err.code === 'auth/too-many-requests') {
+      bloquearLogin(email);
+    }
+  
+    const authErrorMap = {
+      'auth/user-not-found': 'Usuário não encontrado.',
+      'auth/wrong-password': 'Senha incorreta.',
+      'auth/invalid-email': 'E-mail inválido.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/too-many-requests': 'Muitas tentativas. Aguarde 30 minutos.'
     };
-    return { ok: false, msg: msgs[err.code] || 'Erro ao entrar. Tente novamente.' };
+  
+    return {
+      ok: false,
+      msg: authErrorMap[err.code] || 'Erro ao entrar'
+    };
   }
-}
+  }
+
 
 async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermos) {
   try {

@@ -394,11 +394,8 @@ async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermo
 // ─────────────────────────────────────────────────────
 async function recuperarSenha(email) {
   try {
-    const urlRecuperacao = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`;
-
     await sendPasswordResetEmail(auth, email, {
-      url: `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`,
-      handleCodeInApp: true
+      url: `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`
     });
     return { ok: true };
   } catch (err) {

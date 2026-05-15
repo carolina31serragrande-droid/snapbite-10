@@ -137,58 +137,43 @@ export function gerarHtmlEmailRecuperacaoSenha({ nomeCliente = 'estudante', rese
         <table width="100%" cellpadding="0" cellspacing="0" style="background:#EEF2FF;padding:32px 16px;">
           <tr>
             <td align="center">
-              <table width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background:#ffffff;border-radius:24px;overflow:hidden;border:1px solid #D6DCF5;box-shadow:0 18px 50px rgba(0,51,153,.16);">
+              <table width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;background:#ffffff;border-radius:22px;overflow:hidden;border:1px solid #D6DCF5;box-shadow:0 18px 50px rgba(0,51,153,.12);">
                 <tr>
-                  <td style="background:linear-gradient(135deg,#003399,#E30613);padding:34px 28px;text-align:center;">
-                    <div style="font-size:32px;font-weight:900;color:#ffffff;letter-spacing:-.5px;">SnapBite 🔒</div>
-                    <div style="font-size:14px;color:#ffffff;margin-top:8px;opacity:.9;">Recuperação segura da sua conta</div>
+                  <td style="background:linear-gradient(135deg,#003399,#E30613);padding:30px 26px;text-align:center;">
+                    <div style="font-size:30px;font-weight:900;color:#fff;">SnapBite 🔒</div>
+                    <div style="font-size:14px;color:#fff;margin-top:8px;opacity:.9;">Recuperação de senha</div>
                   </td>
                 </tr>
-
                 <tr>
-                  <td>
-                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1400&auto=format&fit=crop" alt="Estudantes usando tecnologia" width="100%" style="height:250px;object-fit:cover;display:block;" />
-                  </td>
-                </tr>
-
-                <tr>
-                  <td style="padding:36px 34px 30px;">
-                    <h1 style="margin:0 0 12px;font-size:28px;line-height:1.2;color:#0A0F1E;">Redefina sua senha</h1>
-
-                    <p style="margin:0 0 18px;font-size:16px;line-height:1.7;color:#5C6680;">
-                      Olá, <strong style="color:#0A0F1E;">${escapeHtml(nomeCliente)}</strong>! Recebemos uma solicitação para trocar a senha da sua conta SnapBite.
+                  <td style="padding:34px 30px;">
+                    <p style="margin:0 0 14px;font-size:16px;line-height:1.7;color:#5C6680;">
+                      Olá, <strong style="color:#0A0F1E;">${escapeHtml(nomeCliente)}</strong>!
                     </p>
-
-                    <p style="margin:0 0 28px;font-size:16px;line-height:1.7;color:#5C6680;">
-                      Clique no botão abaixo para criar uma nova senha com segurança.
+                    <p style="margin:0 0 22px;font-size:16px;line-height:1.7;color:#5C6680;">
+                      Recebemos uma solicitação para redefinir a senha da sua conta SnapBite. Clique no botão abaixo para criar uma nova senha.
                     </p>
-
-                    <table cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 30px;">
-                      <tr>
-                        <td align="center" style="border-radius:16px;background:linear-gradient(135deg,#E30613,#FF4D57);">
-                          <a href="${escapeHtml(resetLink)}" style="display:inline-block;padding:17px 34px;color:#ffffff;text-decoration:none;font-size:16px;font-weight:800;border-radius:16px;">
-                            🔒 REDEFINIR SENHA
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
-
-                    <div style="background:#FFF5F5;border-left:5px solid #E30613;padding:18px 20px;border-radius:14px;margin-bottom:24px;">
+                    <div style="background:#F7F9FF;border:2px dashed #003399;border-radius:18px;padding:28px 24px;text-align:center;margin-bottom:22px;">
+                      <div style="font-size:13px;font-weight:800;color:#5C6680;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">Seu link de redefinição</div>
+                      <table cellpadding="0" cellspacing="0" align="center">
+                        <tr>
+                          <td align="center" style="border-radius:14px;background:linear-gradient(135deg,#003399,#E30613);">
+                            <a href="${escapeHtml(resetLink)}" style="display:inline-block;padding:15px 32px;color:#ffffff;text-decoration:none;font-size:16px;font-weight:800;border-radius:14px;letter-spacing:.3px;">
+                              🔒 REDEFINIR SENHA
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div style="background:#FFF5F5;border-left:5px solid #E30613;padding:16px 18px;border-radius:12px;">
                       <p style="margin:0;font-size:14px;line-height:1.7;color:#7F1D1D;">
-                        ⚠️ Este link expira em alguns minutos por segurança.<br><br>
-                        <strong>Se não for você, ignore essa mensagem!</strong> Sua conta continuará protegida.
+                        Se não foi você, ignore essa mensagem! Nunca compartilhe esse link com outras pessoas.
                       </p>
                     </div>
-
-                    <p style="margin:0;font-size:13px;line-height:1.7;color:#6B7280;">
-                      Dica: nunca compartilhe sua senha com ninguém. A equipe SnapBite nunca pedirá sua senha por mensagem.
-                    </p>
                   </td>
                 </tr>
-
                 <tr>
-                  <td style="background:#001A66;padding:20px 24px;text-align:center;">
-                    <div style="font-size:12px;color:#D6DCF5;">© SnapBite • Plataforma dos estudantes SENAI</div>
+                  <td style="background:#001A66;padding:18px 22px;text-align:center;">
+                    <div style="font-size:12px;color:#D6DCF5;">© SnapBite • Segurança da conta</div>
                   </td>
                 </tr>
               </table>

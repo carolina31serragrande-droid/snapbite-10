@@ -6,198 +6,410 @@
 <title>Recuperar senha — SnapBite</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
-body{margin:0;font-family:'DM Sans',sans-serif;background:#f4f7ff;color:#091224;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
-.card{width:100%;max-width:520px;background:#fff;border-radius:28px;padding:38px;box-shadow:0 20px 60px rgba(0,51,153,.12)}
-.logo{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#E30613;margin-bottom:24px}
-.logo em{color:#003399}
-h1{font-size:2rem;margin-bottom:10px}
-p{color:#5d6785;line-height:1.7}
-.email-box{margin:24px 0;background:#eef2ff;border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;font-weight:700;color:#003399}
-.back-btn{border:none;cursor:pointer;background:none;color:#003399;font-weight:700;padding:0;margin-top:20px;display:inline-block;transition:.2s;font-size:1rem}
-.back-btn:hover{color:#E30613}
-.input{width:100%;padding:16px;border-radius:14px;border:2px solid #dce4ff;margin-bottom:14px;font-size:1rem;box-sizing:border-box;outline:none;font-family:'DM Sans',sans-serif}
-.input:focus{border-color:#003399;box-shadow:0 0 0 4px rgba(0,51,153,.1)}
-.save-btn{width:100%;padding:16px;border-radius:16px;background:#003399;color:#fff;font-weight:700;font-size:1rem;border:none;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
-.save-btn:hover{background:#002280}
-.save-btn:disabled{opacity:.6;cursor:not-allowed}
-.rules{background:#f7f9ff;border-radius:16px;padding:16px 16px 16px 32px;color:#5d6785;margin-bottom:18px}
-.rules li{margin-bottom:8px}
-.feedback{margin-top:18px;padding:14px;border-radius:14px;display:none}
-.feedback.show{display:block}
-.success{background:#ebfff1;color:#118a43}
-.error{background:#fff0f0;color:#d92d20}
-.icon-big{font-size:3rem;margin-bottom:16px}
-.icon-big.red{color:#d92d20}
-.icon-big.blue{color:#003399}
-.icon-big.green{color:#118a43}
-.center{text-align:center}
-.state{display:none}
-#state-loading{display:block;text-align:center;padding:40px 0}
-.spinner{width:44px;height:44px;border:4px solid #dce4ff;border-top-color:#003399;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
-@keyframes spin{to{transform:rotate(360deg)}}
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+  --vinho:#C01830; --roxo:#2B1B6E; --cinza:#5d6785;
+  --azul-lt:#eef2ff; --borda:#dce4ff; --verde:#118a43;
+}
+body {
+  margin:0; font-family:'DM Sans',sans-serif; background:#F0EEF8;
+  color:#1a1a2e; display:flex; align-items:center; justify-content:center;
+  min-height:100vh; padding:24px 16px;
+}
+.card {
+  width:100%; max-width:500px; background:#fff; border-radius:20px;
+  overflow:hidden; box-shadow:0 24px 72px rgba(43,27,110,.13),0 4px 16px rgba(0,0,0,.06);
+}
+.card-header {
+  background:linear-gradient(135deg,var(--roxo) 0%,#8B1A4A 50%,var(--vinho) 100%);
+  padding:28px 36px; display:flex; align-items:center; gap:14px;
+}
+.card-header-icon {
+  width:48px; height:48px; background:rgba(255,255,255,.15); border-radius:14px;
+  display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;
+}
+.logo { font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:900; color:#fff; line-height:1; }
+.logo em { font-style:italic; color:#FFD6DD; }
+.logo-sub { font-size:.75rem; color:rgba(255,255,255,.65); letter-spacing:.5px; text-transform:uppercase; margin-top:3px; }
+.card-body { padding:36px; }
+.state { display:none; }
+#state-loading { display:block; }
+.spinner {
+  width:44px; height:44px; border:4px solid var(--borda);
+  border-top-color:var(--roxo); border-radius:50%;
+  animation:spin .8s linear infinite; margin:20px auto 14px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.icon-big { font-size:3rem; margin:8px 0 18px; display:block; }
+.icon-big.red   { color:#D91E2A; }
+.icon-big.blue  { color:var(--roxo); }
+.icon-big.green { color:var(--verde); }
+h1 { font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:900; margin:0 0 10px; line-height:1.2; color:#1a1a2e; }
+p { color:var(--cinza); line-height:1.7; margin:0 0 16px; }
+.email-box {
+  background:var(--azul-lt); border-radius:14px; padding:14px 16px;
+  display:flex; align-items:center; gap:10px; font-weight:700; color:var(--roxo);
+  margin:16px 0; word-break:break-all;
+}
+.email-box i { flex-shrink:0; font-size:1.1rem; }
+.input {
+  width:100%; padding:15px 16px; border-radius:13px; border:2px solid var(--borda);
+  margin-bottom:12px; font-size:1rem; font-family:'DM Sans',sans-serif; outline:none;
+  transition:border-color .2s,box-shadow .2s; color:#1a1a2e; background:#fafbff;
+}
+.input:focus { border-color:var(--roxo); box-shadow:0 0 0 4px rgba(43,27,110,.1); background:#fff; }
+.strength-bar { display:flex; gap:4px; margin:-4px 0 14px; }
+.strength-seg { flex:1; height:4px; border-radius:99px; background:var(--borda); transition:background .3s; }
+.strength-seg.fraca { background:#D91E2A; }
+.strength-seg.media { background:#d97706; }
+.strength-seg.forte { background:var(--verde); }
+.rules { background:#f7f9ff; border-radius:14px; padding:14px 14px 14px 32px; color:var(--cinza); margin-bottom:18px; font-size:.87rem; }
+.rules li { margin-bottom:6px; transition:color .2s; }
+.rules li.ok { color:var(--verde); }
+.rules li.ok::marker { content:"✓  "; }
+.btn {
+  width:100%; padding:16px; border-radius:15px; font-weight:700; font-size:1rem;
+  font-family:'DM Sans',sans-serif; border:none; cursor:pointer;
+  transition:opacity .2s,transform .1s; display:flex; align-items:center;
+  justify-content:center; gap:8px; text-decoration:none;
+}
+.btn:active { transform:scale(.98); }
+.btn:disabled { opacity:.55; cursor:not-allowed; transform:none; }
+.btn-primary { background:linear-gradient(135deg,var(--roxo),var(--vinho)); color:#fff; }
+.btn-primary:hover:not(:disabled) { opacity:.9; }
+.btn-ghost { background:none; color:var(--roxo); border:2px solid var(--borda); font-size:.93rem; margin-top:10px; }
+.btn-ghost:hover:not(:disabled) { border-color:var(--roxo); }
+.feedback { margin-top:14px; padding:13px 16px; border-radius:13px; font-size:.92rem; display:none; animation:fadeIn .2s ease; }
+.feedback.show { display:block; }
+.feedback.success { background:#ebfff1; color:#118a43; border-left:4px solid var(--verde); }
+.feedback.error   { background:#fff0f0; color:#b91c1c; border-left:4px solid #D91E2A; }
+.security-note { background:#FFF5F5; border-left:4px solid var(--vinho); border-radius:12px; padding:14px 16px; color:#7A1020; font-size:.87rem; line-height:1.65; margin:16px 0; }
+.confirm-note { background:var(--azul-lt); border-left:4px solid var(--roxo); border-radius:12px; padding:14px 16px; color:#1a1a2e; font-size:.87rem; line-height:1.65; margin:16px 0; }
+.countdown { font-family:'DM Mono',monospace; font-size:.85rem; color:var(--cinza); text-align:center; margin-top:12px; }
+.countdown strong { color:var(--roxo); }
+.back-link {
+  display:inline-flex; align-items:center; gap:6px; color:var(--roxo); font-weight:700;
+  font-size:.93rem; background:none; border:none; cursor:pointer; padding:0;
+  margin-top:18px; transition:color .2s; font-family:'DM Sans',sans-serif;
+}
+.back-link:hover { color:var(--vinho); }
+.center { text-align:center; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="logo">Snap<em>Bite</em></div>
-
-  <!-- Carregando -->
-  <div id="state-loading">
-    <div class="spinner"></div>
-    <p style="color:#5d6785">Verificando…</p>
-  </div>
-
-  <!-- Link inválido/expirado -->
-  <div id="state-invalid" class="state center">
-    <div class="icon-big red"><i class="fa-solid fa-circle-xmark"></i></div>
-    <h1>Link inválido ou expirado</h1>
-    <p>Este link de redefinição não é mais válido. Solicite um novo na tela de login.</p>
-    <button class="back-btn" onclick="window.location.href='login.html'">
-      <i class="fa-solid fa-arrow-left"></i> Voltar para o login
-    </button>
-  </div>
-
-  <!-- Confirmação: e-mail enviado -->
-  <div id="state-sent" class="state">
-    <div class="icon-big blue center"><i class="fa-solid fa-envelope-circle-check"></i></div>
-    <h1>Verifique seu e-mail</h1>
-    <p>Enviamos um link de redefinição de senha para:</p>
-    <div class="email-box"><i class="fa-solid fa-envelope"></i><span id="emailText"></span></div>
-    <p>Clique no link do e-mail para criar sua nova senha. Verifique também a caixa de spam.</p>
-    <button class="back-btn" onclick="window.location.href='login.html'">
-      <i class="fa-solid fa-arrow-left"></i> Voltar para o login
-    </button>
-  </div>
-
-  <!-- Nova senha (chegou via link do e-mail) -->
-  <div id="state-newpass" class="state">
-    <h1>Crie uma nova senha</h1>
-    <p>Redefina a senha da conta <strong id="emailNewpass"></strong>.</p>
-    <div style="margin-top:26px">
-      <input type="password" class="input" id="newPassword" placeholder="Nova senha">
-      <input type="password" class="input" id="confirmPassword" placeholder="Confirmar senha">
-      <ul class="rules">
-        <li>Mínimo de 8 caracteres</li>
-        <li>Uma letra maiúscula</li>
-        <li>Um número</li>
-      </ul>
-      <button class="save-btn" id="savePasswordBtn">Salvar nova senha</button>
-      <div class="feedback" id="feedback"></div>
+  <div class="card-header">
+    <div class="card-header-icon">🔐</div>
+    <div>
+      <div class="logo">Snap<em>Bite</em></div>
+      <div class="logo-sub">Segurança da conta</div>
     </div>
   </div>
+  <div class="card-body">
 
-  <!-- Sucesso -->
-  <div id="state-success" class="state center">
-    <div class="icon-big green"><i class="fa-solid fa-circle-check"></i></div>
-    <h1>Senha redefinida!</h1>
-    <p>Sua senha foi atualizada com sucesso.</p>
-    <button class="back-btn" onclick="window.location.href='login.html'">
-      <i class="fa-solid fa-arrow-right"></i> Ir para o login
-    </button>
+    <!-- 1. LOADING -->
+    <div id="state-loading" class="state center">
+      <div class="spinner"></div>
+      <p style="color:var(--cinza)">Verificando link…</p>
+    </div>
+
+    <!-- 2. CONFIRMAR (fix anti-prefetch) -->
+    <div id="state-confirm" class="state">
+      <span class="icon-big blue center"><i class="fa-solid fa-shield-halved"></i></span>
+      <h1>Confirme a redefinição</h1>
+      <p>Você solicitou a redefinição de senha do SnapBite. Clique abaixo para prosseguir com segurança.</p>
+      <div class="confirm-note">
+        <strong>🔒 Verificação de segurança</strong><br>
+        Este passo protege sua conta garantindo que é você quem está acessando, não um bot ou scanner automático.
+      </div>
+      <button class="btn btn-primary" id="btn-confirm">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+        Continuar para redefinir senha
+      </button>
+      <div class="center">
+        <button class="back-link" onclick="window.location.href='login.html'">
+          <i class="fa-solid fa-arrow-left"></i> Cancelar e voltar ao login
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. INVÁLIDO -->
+    <div id="state-invalid" class="state center">
+      <span class="icon-big red"><i class="fa-solid fa-circle-xmark"></i></span>
+      <h1>Link inválido ou expirado</h1>
+      <p id="invalid-msg">Este link de redefinição não é mais válido ou já foi utilizado. Solicite um novo.</p>
+      <button class="btn btn-primary" id="btn-new-link">
+        <i class="fa-solid fa-envelope"></i>
+        Solicitar novo link por e-mail
+      </button>
+      <div>
+        <button class="back-link" onclick="window.location.href='login.html'">
+          <i class="fa-solid fa-arrow-left"></i> Voltar ao login
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. NOVA SENHA -->
+    <div id="state-newpass" class="state">
+      <span class="icon-big blue"><i class="fa-solid fa-key"></i></span>
+      <h1>Crie uma nova senha</h1>
+      <p>Redefina a senha da conta <strong id="emailNewpass" style="color:#1a1a2e;word-break:break-all;"></strong>.</p>
+      <div style="margin-top:4px">
+        <input type="password" class="input" id="newPassword" placeholder="Nova senha" autocomplete="new-password">
+        <div class="strength-bar">
+          <div class="strength-seg" id="sb1"></div>
+          <div class="strength-seg" id="sb2"></div>
+          <div class="strength-seg" id="sb3"></div>
+          <div class="strength-seg" id="sb4"></div>
+        </div>
+        <input type="password" class="input" id="confirmPassword" placeholder="Confirmar senha" autocomplete="new-password">
+        <ul class="rules" id="rules-list">
+          <li id="rule-len">Mínimo de 8 caracteres</li>
+          <li id="rule-upper">Uma letra maiúscula</li>
+          <li id="rule-num">Um número</li>
+          <li id="rule-match">Senhas coincidem</li>
+        </ul>
+        <button class="btn btn-primary" id="savePasswordBtn">
+          <i class="fa-solid fa-floppy-disk"></i>
+          Salvar nova senha
+        </button>
+        <div class="feedback" id="feedback-newpass"></div>
+      </div>
+    </div>
+
+    <!-- 5. SUCESSO -->
+    <div id="state-success" class="state center">
+      <span class="icon-big green"><i class="fa-solid fa-circle-check"></i></span>
+      <h1>Senha redefinida! 🎉</h1>
+      <p>Sua senha foi atualizada com sucesso.</p>
+      <div class="countdown" id="countdown-text"></div>
+      <button class="btn btn-primary" style="margin-top:20px" onclick="window.location.replace('login.html')">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+        Ir para o login agora
+      </button>
+    </div>
+
+    <!-- 6. ENVIADO (veio do login) -->
+    <div id="state-sent" class="state">
+      <span class="icon-big blue center"><i class="fa-solid fa-envelope-circle-check"></i></span>
+      <h1>Verifique seu e-mail</h1>
+      <p>Enviamos um link de redefinição para:</p>
+      <div class="email-box">
+        <i class="fa-solid fa-envelope"></i>
+        <span id="emailText"></span>
+      </div>
+      <p>Clique no link recebido para criar sua nova senha. Confira também o spam.</p>
+      <div class="security-note">
+        <strong>⚠️ Não compartilhe o link</strong><br>
+        O link é de uso único e expira em 1 hora.
+      </div>
+      <div class="center">
+        <button class="back-link" onclick="window.location.href='login.html'">
+          <i class="fa-solid fa-arrow-left"></i> Voltar ao login
+        </button>
+      </div>
+    </div>
+
+    <!-- 7. REENVIANDO -->
+    <div id="state-resending" class="state center">
+      <div class="spinner"></div>
+      <p style="color:var(--cinza)">Enviando novo link…</p>
+    </div>
+
+    <!-- 8. REENVIADO -->
+    <div id="state-resent" class="state center">
+      <span class="icon-big green"><i class="fa-solid fa-paper-plane"></i></span>
+      <h1>Novo link enviado!</h1>
+      <p>Verifique sua caixa de entrada. O link anterior foi invalidado automaticamente pelo Firebase.</p>
+      <div class="center">
+        <button class="back-link" onclick="window.location.href='login.html'">
+          <i class="fa-solid fa-arrow-left"></i> Voltar ao login
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <script type="module">
-  import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
-  import {
-    getAuth,
-    verifyPasswordResetCode,
-    confirmPasswordReset
-  } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+import {
+  getAuth,
+  verifyPasswordResetCode,
+  confirmPasswordReset,
+  sendPasswordResetEmail
+} from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 
-  const firebaseConfig = {
-    apiKey:            "AIzaSyCPQuK79XDc8B5bgr8tVSUwcLkSHlVJU6c",
-    authDomain:        "snapbite-85943.firebaseapp.com",
-    projectId:         "snapbite-85943",
-    storageBucket:     "snapbite-85943.firebasestorage.app",
-    messagingSenderId: "839470161933",
-    appId:             "1:839470161933:web:fc3fe935406a2406e13544"
+const firebaseConfig = {
+  apiKey:            "AIzaSyCPQuK79XDc8B5bgr8tVSUwcLkSHlVJU6c",
+  authDomain:        "snapbite-85943.firebaseapp.com",
+  projectId:         "snapbite-85943",
+  storageBucket:     "snapbite-85943.firebasestorage.app",
+  messagingSenderId: "839470161933",
+  appId:             "1:839470161933:web:fc3fe935406a2406e13544"
+};
+
+const app  = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const $       = id => document.getElementById(id);
+const STATES  = ['state-loading','state-confirm','state-invalid','state-newpass',
+                 'state-success','state-sent','state-resending','state-resent'];
+
+function showState(id) {
+  STATES.forEach(s => $(s).style.display = (s === id) ? 'block' : 'none');
+}
+
+function showFeedback(elId, msg, type) {
+  const el = $(elId);
+  el.className = `feedback show ${type}`;
+  el.innerHTML = msg;
+}
+
+/* ── strength bar ── */
+function updateStrength(pwd, conf) {
+  const len   = pwd.length >= 8;
+  const upper = /[A-Z]/.test(pwd);
+  const num   = /[0-9]/.test(pwd);
+  const match = pwd === conf && pwd.length > 0;
+  $('rule-len'  ).className = len   ? 'ok' : '';
+  $('rule-upper').className = upper ? 'ok' : '';
+  $('rule-num'  ).className = num   ? 'ok' : '';
+  $('rule-match').className = match ? 'ok' : '';
+  const score = [len, upper, num, pwd.length >= 12].filter(Boolean).length;
+  const cls   = score <= 1 ? 'fraca' : score <= 2 ? 'media' : 'forte';
+  ['sb1','sb2','sb3','sb4'].forEach((id, i) => $(id).className = 'strength-seg ' + (i < score ? cls : ''));
+}
+
+/* ── countdown ── */
+function startCountdown(secs, cb) {
+  let r = secs;
+  const el  = $('countdown-text');
+  const tick = () => {
+    el.innerHTML = `Redirecionando em <strong>${r}s</strong>…`;
+    if (r-- <= 0) { cb(); return; }
+    setTimeout(tick, 1000);
   };
+  tick();
+}
 
-  // Reutiliza app já inicializado se existir (evita duplicate app error)
-  const app  = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+/* ── build continueUrl correto para GitHub Pages ── */
+function buildContinueUrl() {
+  const { origin, pathname } = window.location;
+  const base = pathname.replace(/\/[^/]*$/, '/');
+  return `${origin}${base}recuperar-senha.html`;
+}
 
-  function showState(id) {
-    ['state-loading','state-invalid','state-sent','state-newpass','state-success'].forEach(s => {
-      document.getElementById(s).style.display = s === id ? 'block' : 'none';
-    });
+/* ── init ── */
+async function init() {
+  const params  = new URLSearchParams(window.location.search);
+  const oobCode = params.get('oobCode');
+  const mode    = params.get('mode');
+
+  /* Sem oobCode: veio do login após solicitar reset */
+  if (!oobCode) {
+    const email = localStorage.getItem('snapbite_recovery_email');
+    if (!email) { window.location.replace('login.html'); return; }
+    $('emailText').textContent = email;
+    localStorage.removeItem('snapbite_recovery_email');
+    showState('state-sent');
+    return;
   }
 
-  function showFeedback(msg, type) {
-    const el = document.getElementById('feedback');
-    el.className = 'feedback show ' + type;
-    el.textContent = msg;
+  /* Mode errado (ex: verifyEmail) */
+  if (mode && mode !== 'resetPassword') {
+    showState('state-invalid');
+    return;
   }
 
-  async function init() {
-    const params  = new URLSearchParams(window.location.search);
-    const oobCode = params.get('oobCode');
-    const mode    = params.get('mode');
+  /*
+   * FIX: NÃO verificar oobCode automaticamente no carregamento.
+   *
+   * Problema: Gmail e outros clientes pré-carregam URLs dos e-mails
+   * para verificação de segurança/spam. Isso consome o oobCode (uso único)
+   * antes do usuário clicar, gerando "Link inválido ou expirado".
+   *
+   * Solução: guardar o oobCode e exibir um botão que o usuário
+   * precisa clicar para acionar a verificação real.
+   */
+  window._pendingOobCode = oobCode;
+  showState('state-confirm');
+}
 
-    // Sem oobCode: veio da tela de login depois de pedir recuperação
-    if (!oobCode) {
-      const email = localStorage.getItem('snapbite_recovery_email');
-      if (!email) {
-        window.location.href = 'login.html';
-        return;
-      }
-      document.getElementById('emailText').textContent = email;
-      localStorage.removeItem('snapbite_recovery_email');
-      showState('state-sent');
-      return;
-    }
+/* ── confirmar ── */
+$('btn-confirm').addEventListener('click', async () => {
+  const btn = $('btn-confirm');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando…';
+  showState('state-loading');
 
-    // Com oobCode mas modo errado
-    if (mode !== 'resetPassword') {
-      showState('state-invalid');
-      return;
-    }
+  try {
+    const email = await verifyPasswordResetCode(auth, window._pendingOobCode);
+    $('emailNewpass').textContent = email;
+    setupPasswordForm(window._pendingOobCode);
+    showState('state-newpass');
+  } catch (err) {
+    const msgs = {
+      'auth/expired-action-code': 'Este link expirou. Links são válidos por 1 hora. Solicite um novo abaixo.',
+      'auth/invalid-action-code': 'Este link já foi utilizado ou é inválido. Solicite um novo abaixo.',
+      'auth/user-disabled':       'Esta conta foi desativada. Entre em contato com o suporte.',
+      'auth/user-not-found':      'Conta não encontrada.',
+    };
+    $('invalid-msg').textContent = msgs[err.code] || 'Link inválido ou expirado. Solicite um novo abaixo.';
+    showState('state-invalid');
+  }
+});
 
-    // Valida o oobCode com o Firebase
+/* ── solicitar novo link ── */
+$('btn-new-link').addEventListener('click', async () => {
+  /* Redireciona para o login com flag para abrir modal de recuperação automaticamente */
+  sessionStorage.setItem('snapbite_abrir_recovery', '1');
+  window.location.href = 'login.html';
+});
+
+/* ── formulário nova senha ── */
+function setupPasswordForm(oobCode) {
+  const newPwd  = $('newPassword');
+  const confPwd = $('confirmPassword');
+
+  newPwd.addEventListener('input',  () => updateStrength(newPwd.value, confPwd.value));
+  confPwd.addEventListener('input', () => updateStrength(newPwd.value, confPwd.value));
+
+  $('savePasswordBtn').addEventListener('click', async () => {
+    const senha    = newPwd.value;
+    const confirma = confPwd.value;
+
+    if (senha.length < 8)         { showFeedback('feedback-newpass','⚠️ A senha precisa ter pelo menos 8 caracteres.','error'); return; }
+    if (!/[A-Z]/.test(senha))     { showFeedback('feedback-newpass','⚠️ Inclua pelo menos uma letra maiúscula.','error'); return; }
+    if (!/[0-9]/.test(senha))     { showFeedback('feedback-newpass','⚠️ Inclua pelo menos um número.','error'); return; }
+    if (senha !== confirma)       { showFeedback('feedback-newpass','⚠️ As senhas não coincidem.','error'); return; }
+
+    const btn = $('savePasswordBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando…';
+
     try {
-      const email = await verifyPasswordResetCode(auth, oobCode);
-      document.getElementById('emailNewpass').textContent = email;
-      showState('state-newpass');
-
-      document.getElementById('savePasswordBtn').addEventListener('click', async () => {
-        const senha    = document.getElementById('newPassword').value;
-        const confirma = document.getElementById('confirmPassword').value;
-
-        if (senha.length < 8)          { showFeedback('A senha precisa ter pelo menos 8 caracteres.', 'error'); return; }
-        if (!/[A-Z]/.test(senha))      { showFeedback('Inclua pelo menos uma letra maiúscula.', 'error'); return; }
-        if (!/[0-9]/.test(senha))      { showFeedback('Inclua pelo menos um número.', 'error'); return; }
-        if (senha !== confirma)        { showFeedback('As senhas não coincidem.', 'error'); return; }
-
-        const btn = document.getElementById('savePasswordBtn');
-        btn.disabled = true;
-        btn.textContent = 'Salvando…';
-
-        try {
-          await confirmPasswordReset(auth, oobCode, senha);
-          showState('state-success');
-        } catch (err) {
-          const msgs = {
-            'auth/expired-action-code': 'Este link expirou. Solicite um novo na tela de login.',
-            'auth/invalid-action-code': 'Link inválido ou já utilizado.',
-            'auth/weak-password':       'Senha muito fraca. Use pelo menos 6 caracteres.',
-          };
-          showFeedback(msgs[err.code] || 'Erro ao salvar. Tente novamente.', 'error');
-          btn.disabled = false;
-          btn.textContent = 'Salvar nova senha';
-        }
-      });
-
+      await confirmPasswordReset(auth, oobCode, senha);
+      showState('state-success');
+      startCountdown(5, () => window.location.replace('login.html'));
     } catch (err) {
-      // oobCode inválido ou expirado
-      showState('state-invalid');
+      const msgs = {
+        'auth/expired-action-code': 'Este link expirou. Volte ao login e solicite um novo.',
+        'auth/invalid-action-code': 'Link inválido ou já utilizado. Solicite um novo.',
+        'auth/weak-password':       'Senha muito fraca. Use pelo menos 8 caracteres.',
+      };
+      showFeedback('feedback-newpass', `❌ ${msgs[err.code] || 'Erro ao salvar. Tente novamente.'}`, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar nova senha';
     }
-  }
+  });
+}
 
-  init();
+init();
 </script>
 </body>
 </html>

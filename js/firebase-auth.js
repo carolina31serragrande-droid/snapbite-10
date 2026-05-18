@@ -392,8 +392,14 @@ async function recuperarSenha(email) {
     return { ok: false, msg: txt, waitMs: rate.waitMs };
   }
   try {
+    // Constrói a URL da página de redefinição de forma robusta para GitHub Pages e localhost.
+    // pathname.replace remove o nome do arquivo atual, mantendo apenas o diretório base.
+    // Ex: /snapbite-10/login.html → /snapbite-10/ → .../snapbite-10/recuperar-senha.html
+    const _base = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
+    const _continueUrl = `${_base}recuperar-senha.html`;
+
     await sendPasswordResetEmail(auth, email, {
-      url: `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`,
+      url: _continueUrl,
       handleCodeInApp: true
     });
     registerResetAttempt();

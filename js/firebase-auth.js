@@ -245,7 +245,7 @@ function logoutFirebaseReal() {
   window.showToast?.('Você saiu da conta.', 'info');
   // Faz signOut do Firebase e redireciona para login
   signOut(auth).then(() => {
-    _fazendoLogout = false
+    _fazendoLogout = false;
     // Se não estiver na página de login, redireciona
     const path = window.location.pathname || '';
     if (!path.endsWith('login.html') && !path.endsWith('/login')) {

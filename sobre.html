@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SnapBite App — Seu lanche no bolso</title>
+  <title>SnapBite — Sobre o App</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="css/global.css">
@@ -702,11 +702,8 @@
     </section>
   </main>
 
-  <script src="js/components.js"></script>
-  <script src="js/app.js"></script>
-
   <!-- MODAL NOTIFICAÇÃO -->
-  <div id="modal-notificacao" class="modal-overlay" style="display: none;">
+  <div id="modal-notificacao" class="modal-overlay hidden">
     <div class="modal-content" style="max-width: 400px;">
       <div class="modal-header">
         <h2>Receba notificações do SnapBite App</h2>
@@ -842,9 +839,6 @@
     }
   </style>
 
-  <script src="js/components.js"></script>
-  <script src="js/app.js"></script>
-
   <script>
     (function () {
       // Gerenciar modal de notificações
@@ -858,12 +852,12 @@
 
       // Abrir modal
       btnNotificacao.addEventListener('click', () => {
-        modalNotificacao.style.display = 'flex';
+        modalNotificacao.classList.remove('hidden');
       });
 
       // Fechar modal
       function fecharModal() {
-        modalNotificacao.style.display = 'none';
+        modalNotificacao.classList.add('hidden');
       }
 
       modalClose.addEventListener('click', fecharModal);
@@ -919,6 +913,32 @@
 
   <script src="js/components.js"></script>
   <script src="js/app.js"></script>
+
+  <script>
+    // Animação do mockup do celular
+    (function () {
+      const btnPronto = document.getElementById('pedido-pronto-btn');
+      const panelPronto = document.getElementById('app-panel-pronto');
+      const panelResgatado = document.getElementById('app-panel-resgatado');
+      if (!btnPronto || !panelPronto || !panelResgatado) return;
+
+      btnPronto.addEventListener('click', function () {
+        btnPronto.classList.add('is-pressed');
+        btnPronto.addEventListener('animationend', function handler() {
+          btnPronto.removeEventListener('animationend', handler);
+          btnPronto.classList.remove('is-pressed');
+          panelPronto.classList.remove('active');
+          panelResgatado.classList.add('active');
+
+          // Voltar para a tela inicial após 3s
+          setTimeout(function () {
+            panelResgatado.classList.remove('active');
+            panelPronto.classList.add('active');
+          }, 3000);
+        });
+      });
+    })();
+  </script>
 
   <script type="module" src="backend/firebase-auth.js"></script>
 </body>

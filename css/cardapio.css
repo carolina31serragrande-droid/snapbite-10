@@ -109,3 +109,15 @@
   .busca-wrap { margin-left: 0; }
   .busca-wrap input { width: 120px; }
 }
+
+/* ── imagens reais dentro dos cards ──────────── */
+.prod-img {
+  overflow: hidden;
+}
+.prod-img img {
+  width: 160%;
+  height: 160%;
+  object-position: center;
+  display: grid;
+  border-radius: 0;
+}

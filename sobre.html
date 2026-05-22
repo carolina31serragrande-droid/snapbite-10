@@ -3,498 +3,419 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SnapBite — Sobre o App</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
+  <title>Sobre Nós | SnapBite</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧡</text></svg>">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/pages.css">
+
   <style>
-    .app-hero-section {
-      background: linear-gradient(135deg, rgba(3,46,173,0.04), rgba(227,6,19,0.04));
-      padding: 80px 0 60px;
+    /* ── MISSÃO ───────────────────────────────── */
+    .missao-section {
+      padding: 80px 0;
+      background: #fff;
     }
-    .app-hero-content {
+    .missao-inner {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 40px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 60px;
+      gap: 72px;
       align-items: center;
     }
-    .app-hero-texto h1 {
+    .missao-texto h2 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
       font-weight: 900;
       color: var(--preto-q);
-      line-height: 1.1;
-      margin-bottom: 20px;
+      line-height: 1.15;
+      margin: 12px 0 20px;
     }
-    .app-hero-texto h1 em {
+    .missao-texto h2 em {
       font-style: italic;
       color: var(--mostarda);
     }
-    .app-hero-texto p {
-      font-size: 1.05rem;
+    .missao-texto p {
+      font-size: 1.02rem;
       color: var(--cinza-q);
-      line-height: 1.8;
-      margin-bottom: 30px;
+      line-height: 1.85;
+      margin-bottom: 18px;
     }
-    .app-cta-buttons {
+    .missao-pilares {
       display: flex;
+      flex-direction: column;
       gap: 16px;
-      align-items: center;
-      margin-bottom: 40px;
-      flex-wrap: wrap;
+      margin-top: 8px;
     }
-    .app-btn-primary {
-      background: var(--vinho);
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: background var(--t), transform var(--t);
+    .pilar {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
+      align-items: flex-start;
+      gap: 14px;
+      background: var(--creme);
+      border: 1.5px solid var(--creme-esc);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      transition: border-color var(--t), transform var(--t);
     }
-    .app-btn-primary:hover {
-      background: var(--vinho-cl);
-      transform: translateY(-2px);
-    }
-    .app-btn-secondary {
-      color: var(--vinho);
-      border: 2px solid var(--vinho);
-      background: transparent;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: border-color var(--t), color var(--t);
-      text-decoration: none;
-    }
-    .app-btn-secondary:hover {
-      color: var(--vinho-cl);
-      border-color: var(--vinho-cl);
-    }
-    .app-aviso {
-      background: rgba(227,6,19,0.08);
-      border-left: 3px solid var(--mostarda);
-      padding: 14px 16px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      color: var(--cinza-q);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .app-aviso i {
-      color: var(--mostarda);
-      font-size: 1.1rem;
+    .pilar:hover { border-color: var(--mostarda); transform: translateX(4px); }
+    .pilar-icon {
+      font-size: 1.6rem;
       flex-shrink: 0;
+      margin-top: 2px;
     }
-
-    .app-mockup-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
-    .app-phone {
-      width: 240px;
-      height: 480px;
-      background: #000;
-      border-radius: 40px;
-      border: 8px solid #1a1a1a;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-      position: relative;
-    }
-    .app-phone::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 140px;
-      height: 28px;
-      background: #000;
-      border-radius: 0 0 20px 20px;
-      z-index: 30;
-    }
-
-    .app-screen {
-      width: 100%;
-      height: 100%;
-      background: var(--creme);
-      padding-top: 16px;
-      padding-bottom: 16px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .app-screen-panel {
-      position: absolute;
-      inset: 16px 0 16px 0;
-      display: flex;
-      flex-direction: column;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateX(24px);
-      transition: opacity 0.45s ease, transform 0.45s ease;
-    }
-
-    .app-screen-panel.active {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(0);
-    }
-
-    .app-screen-header {
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--creme-esc);
-      background: var(--creme);
-    }
-    .app-screen-header span {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--mostarda);
-    }
-    .app-screen-header i {
-      font-size: 0.9rem;
-      color: var(--preto-q);
-    }
-
-    .app-screen-content {
-      flex: 1;
-      padding: 16px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      position: relative;
-    }
-
-    .app-screen-notif {
-      background: var(--vinho);
-      color: white;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-align: center;
-      position: relative;
-      cursor: pointer;
-      transform-origin: center;
-      box-shadow: 0 10px 22px rgba(0,51,153,0.18);
-    }
-
-    .app-screen-notif.is-pressed {
-      animation: notifPress 0.45s ease forwards;
-    }
-
-    @keyframes notifPress {
-      0% { transform: scale(1); }
-      35% { transform: scale(0.94); }
-      60% { transform: scale(1.03); }
-      100% { transform: scale(1); }
-    }
-
-    .app-screen-item {
-      background: white;
-      border: 1px solid var(--cinza-borda);
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.65rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .app-screen-item span:last-child {
-      color: var(--mostarda);
-      font-weight: 700;
-    }
-
-    .app-screen-total {
-      background: white;
-      border: 1px solid var(--cinza-borda);
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.68rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-    }
-    .app-screen-total span:last-child {
-      color: var(--mostarda);
-    }
-
-    .resgate-hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      text-align: center;
-      padding: 10px 0 6px;
-    }
-
-    .resgate-icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #18a957, #4bc86e);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      box-shadow: 0 10px 24px rgba(24,169,87,0.24);
-    }
-
-    .resgate-titulo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
-      font-weight: 900;
-      color: var(--preto-q);
-      line-height: 1.1;
-    }
-
-    .resgate-sub {
-      font-size: 0.72rem;
-      color: var(--cinza-q);
-      line-height: 1.5;
-      max-width: 160px;
-    }
-
-    .resgate-card {
-      background: white;
-      border: 1px solid var(--cinza-borda);
-      border-radius: 10px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .resgate-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.68rem;
-      color: var(--preto-q);
-    }
-
-    .resgate-row strong {
-      color: var(--vinho);
-    }
-
-    .resgate-code {
-      background: rgba(227,6,19,0.08);
-      border: 1px dashed rgba(227,6,19,0.35);
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: var(--terracota);
-      letter-spacing: 1px;
-    }
-
-    .resgate-badge {
-      background: var(--vinho);
-      color: white;
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 0.72rem;
-      font-weight: 700;
-    }
-
-    .features-section {
-      padding: 80px 0;
-      background: #fff;
-    }
-    .features-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 40px;
-    }
-    .features-header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-    .features-header .eyebrow {
-      color: var(--mostarda);
-    }
-    .features-header h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 4vw, 2.5rem);
-      font-weight: 900;
-      color: var(--preto-q);
-      margin: 12px 0 20px;
-    }
-    .features-header p {
-      font-size: 1rem;
-      color: var(--cinza-q);
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 28px;
-    }
-    .feature-card {
-      background: #fff;
-      border: 1.5px solid var(--cinza-borda);
-      border-radius: 12px;
-      padding: 32px 24px;
-      transition: transform var(--t), box-shadow var(--t), border-color var(--t);
-    }
-    .feature-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--sombra-m);
-      border-color: var(--mostarda);
-    }
-    .feature-icon {
-      font-size: 2.4rem;
-      margin-bottom: 16px;
-    }
-    .feature-card h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
+    .pilar-texto strong {
+      display: block;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--preto-q);
-      margin-bottom: 12px;
+      margin-bottom: 4px;
     }
-    .feature-card p {
-      font-size: 0.9rem;
+    .pilar-texto span {
+      font-size: 0.88rem;
       color: var(--cinza-q);
       line-height: 1.6;
     }
 
-    .timeline-section {
+    /* ── VISUAL LADO DIREITO ──────────────────── */
+    .missao-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .missao-card-stack {
+      position: relative;
+      width: 340px;
+      height: 380px;
+    }
+    .mcard {
+      position: absolute;
+      background: #fff;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: 18px;
+      padding: 28px 24px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.07);
+    }
+    .mcard-back {
+      top: 32px;
+      left: 32px;
+      right: 0;
+      bottom: 0;
+      background: var(--vinho);
+      border-color: var(--vinho);
+      transform: rotate(4deg);
+    }
+    .mcard-front {
+      top: 0;
+      left: 0;
+      right: 32px;
+      bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .mcard-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--vinho);
+      letter-spacing: -0.5px;
+    }
+    .mcard-logo span { color: var(--mostarda); }
+    .mcard-stat {
+      display: flex;
+      flex-direction: column;
+    }
+    .mcard-stat .num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--preto-q);
+      line-height: 1;
+    }
+    .mcard-stat .label {
+      font-size: 0.82rem;
+      color: var(--cinza-q);
+      margin-top: 4px;
+    }
+    .mcard-stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .mcard-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(196,148,43,0.12);
+      color: var(--mostarda);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 20px;
+      width: fit-content;
+    }
+
+    /* ── HISTÓRIA ─────────────────────────────── */
+    .historia-section {
       padding: 80px 0;
       background: var(--creme);
     }
-    .timeline-inner {
-      max-width: 1200px;
+    .historia-inner {
+      max-width: 900px;
       margin: 0 auto;
       padding: 0 40px;
     }
-    .timeline-header {
+    .historia-header {
       text-align: center;
-      margin-bottom: 60px;
+      margin-bottom: 56px;
     }
-    .timeline-header h2 {
+    .historia-header h2 {
       font-family: 'Playfair Display', serif;
-      font-size: 2.2rem;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
       font-weight: 900;
       color: var(--preto-q);
-      margin: 12px 0 20px;
+      margin: 12px 0 16px;
     }
-    .timeline-header p {
-      font-size: 1rem;
-      color: var(--cinza-q);
-    }
-    .timeline {
-      display: grid;
-      grid-template-columns: 1fr 3px 1fr;
-      gap: 28px;
+    .historia-header p { font-size: 1rem; color: var(--cinza-q); max-width: 600px; margin: 0 auto; }
+
+    .historia-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
       position: relative;
-      align-items: stretch;
-      max-width: 980px;
-      margin: 0 auto;
     }
-    .timeline-line {
+    .historia-steps::before {
+      content: '';
+      position: absolute;
+      left: 26px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
       background: linear-gradient(to bottom, var(--mostarda), var(--vinho));
       border-radius: 2px;
     }
-    .timeline-column {
+    .historia-step {
       display: flex;
-      flex-direction: column;
       gap: 28px;
-    }
-    .timeline-item {
-      background: #fff;
-      border: 1.5px solid var(--cinza-borda);
-      border-radius: 12px;
-      padding: 24px;
+      padding-bottom: 40px;
       position: relative;
     }
-    .timeline-item h3 {
+    .historia-step:last-child { padding-bottom: 0; }
+    .hstep-dot {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--vinho);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 4px 16px rgba(100,0,20,0.2);
+    }
+    .hstep-body {
+      flex: 1;
+      background: #fff;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-top: 4px;
+    }
+    .hstep-body h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: var(--preto-q);
       margin-bottom: 8px;
     }
-    .timeline-item p {
-      font-size: 0.9rem;
+    .hstep-body p {
+      font-size: 0.92rem;
+      color: var(--cinza-q);
+      line-height: 1.7;
+    }
+    .hstep-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--mostarda);
+      background: rgba(196,148,43,0.1);
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+
+    /* ── EQUIPE ───────────────────────────────── */
+    .equipe-section {
+      padding: 80px 0;
+      background: #fff;
+    }
+    .equipe-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .equipe-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .equipe-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 900;
+      color: var(--preto-q);
+      margin: 12px 0 16px;
+    }
+    .equipe-header p { font-size: 1rem; color: var(--cinza-q); max-width: 560px; margin: 0 auto; }
+
+    .equipe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+    }
+    .membro-card {
+      background: #fff;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: var(--radius-xl);
+      padding: 32px 24px;
+      text-align: center;
+      transition: transform var(--t), box-shadow var(--t), border-color var(--t);
+    }
+    .membro-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--sombra-m);
+      border-color: var(--mostarda);
+    }
+    .membro-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: var(--vinho);
+      color: #fff;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+    }
+    .membro-card:nth-child(2) .membro-avatar { background: var(--mostarda); color: var(--preto-q); }
+    .membro-card:nth-child(3) .membro-avatar { background: #2d6a4f; }
+    .membro-card:nth-child(4) .membro-avatar { background: #1d3557; }
+    .membro-card:nth-child(5) .membro-avatar { background: #6d2b4e; }
+    .membro-nome {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--preto-q);
+      margin-bottom: 6px;
+    }
+    .membro-cargo {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--mostarda);
+      margin-bottom: 10px;
+    }
+    .membro-desc {
+      font-size: 0.87rem;
       color: var(--cinza-q);
       line-height: 1.6;
     }
 
-    .cta-section {
+    /* ── VALORES ──────────────────────────────── */
+    .valores-section {
       padding: 80px 0;
-      background: #fff;
+      background: var(--vinho);
     }
-    .cta-inner {
-      max-width: 800px;
+    .valores-inner {
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 40px;
+    }
+    .valores-header {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+    .valores-header .eyebrow { color: var(--mostarda); }
+    .valores-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 900;
+      color: #fff;
+      margin: 12px 0 16px;
+    }
+    .valores-header p { font-size: 1rem; color: rgba(255,255,255,0.6); }
+    .valores-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .valor-card {
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      transition: background var(--t), border-color var(--t);
+    }
+    .valor-card:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: var(--mostarda);
+    }
+    .valor-icon { font-size: 2rem; margin-bottom: 14px; }
+    .valor-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .valor-card p { font-size: 0.88rem; color: rgba(255,255,255,0.6); line-height: 1.65; }
+
+    /* ── CTA FINAL ────────────────────────────── */
+    .sobre-cta {
+      padding: 80px 0;
+      background: #fff;
       text-align: center;
     }
-    .cta-inner h2 {
+    .sobre-cta-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .sobre-cta-inner h2 {
       font-family: 'Playfair Display', serif;
       font-size: 2.2rem;
       font-weight: 900;
       color: var(--preto-q);
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
-    .cta-inner p {
-      font-size: 1.05rem;
+    .sobre-cta-inner p {
+      font-size: 1.02rem;
       color: var(--cinza-q);
       line-height: 1.8;
-      margin-bottom: 40px;
+      margin-bottom: 36px;
     }
-    .cta-buttons {
+    .sobre-cta-btns {
       display: flex;
       gap: 16px;
       justify-content: center;
       flex-wrap: wrap;
     }
 
-    @media (max-width: 768px) {
-      .app-hero-content {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-      .app-cta-buttons {
-        flex-direction: column;
-        gap: 12px;
-      }
-      .timeline {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-      .timeline-line {
-        display: none;
-      }
-      .cta-buttons {
-        flex-direction: column;
-      }
+    /* ── RESPONSIVE ───────────────────────────── */
+    @media (max-width: 860px) {
+      .missao-inner { grid-template-columns: 1fr; gap: 40px; }
+      .missao-card-stack { display: none; }
+      .historia-inner, .equipe-inner, .valores-inner, .sobre-cta-inner { padding: 0 20px; }
+      .historia-steps::before { left: 22px; }
+      .hstep-dot { width: 46px; height: 46px; font-size: 1.1rem; }
+      .sobre-cta-btns { flex-direction: column; align-items: center; }
     }
   </style>
 </head>
@@ -502,444 +423,220 @@
   <script src="js/skeleton.js"></script>
 
   <main>
-    <!-- HERO APP -->
-    <section class="app-hero-section">
-      <div class="app-hero-content">
-        <div class="app-hero-texto">
-          <h1>SnapBite no seu <em>bolso</em>.</h1>
-          <p>O app oficial do SnapBite está chegando. Notificações em tempo real, histórico de pedidos, promoções exclusivas e tudo o que você precisa pra pedir rápido e fácil.</p>
-          
-          <div class="app-cta-buttons">
-            <button class="app-btn-primary" id="btn-notificacao">
-              <i class="fa-solid fa-bell"></i>
-              Quero notificação
-            </button>
-            <a href="saiba-mais.html" class="app-btn-secondary">Saber mais</a>
-          </div>
 
-          <div class="app-aviso">
-            <i class="fa-solid fa-circle-info"></i>
-            <span>Disponível em breve para iOS e Android. Seja um dos primeiros a testar!</span>
-          </div>
-        </div>
-
-        <div class="app-mockup-container">
-          <div class="app-phone">
-            <div class="app-screen">
-
-              <!-- Tela 1 -->
-              <div class="app-screen-panel active" id="app-panel-pronto">
-                <div class="app-screen-header">
-                  <span>SnapBite</span>
-                  <i class="fa-solid fa-bell"></i>
-                </div>
-
-                <div class="app-screen-content">
-                  <div class="app-screen-notif" id="pedido-pronto-btn">✅ Pedido pronto!</div>
-
-                  <div class="app-screen-item">
-                    <span>SnapBurguer Clássico</span>
-                    <span>R$ 12,90</span>
-                  </div>
-
-                  <div class="app-screen-item">
-                    <span>Batata Crocante</span>
-                    <span>R$ 7,90</span>
-                  </div>
-
-                  <div class="app-screen-total">
-                    <span>Total</span>
-                    <span>R$ 20,80</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Tela 2 -->
-              <div class="app-screen-panel" id="app-panel-resgatado">
-                <div class="app-screen-header">
-                  <span>SnapBite</span>
-                  <i class="fa-solid fa-check-circle"></i>
-                </div>
-
-                <div class="app-screen-content">
-                  <div class="resgate-hero">
-                    <div class="resgate-icon">
-                      <i class="fa-solid fa-check"></i>
-                    </div>
-                    <div class="resgate-titulo">Pedido resgatado</div>
-                    <div class="resgate-sub">Seu pedido foi retirado com sucesso no balcão.</div>
-                  </div>
-
-                  <div class="resgate-badge">✅ Retirada confirmada</div>
-
-                  <div class="resgate-card">
-                    <div class="resgate-row">
-                      <span>Status</span>
-                      <strong>Concluído</strong>
-                    </div>
-                    <div class="resgate-row">
-                      <span>Horário</span>
-                      <strong>11:47</strong>
-                    </div>
-                    <div class="resgate-row">
-                      <span>Total pago</span>
-                      <strong>R$ 20,80</strong>
-                    </div>
-                  </div>
-
-                  <div class="resgate-code">RESGATE #SB-20A8</div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="features-section">
-      <div class="features-inner">
-        <div class="features-header">
-          <span class="eyebrow">Recursos do app</span>
-          <h2>Tudo o que você precisa<br>na palma da mão</h2>
-          <p>Um aplicativo criado pra facilitar sua rotina no SENAI e deixar seu pedido mais rápido, mais bonito e mais inteligente.</p>
-        </div>
-
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">🔔</div>
-            <h3>Notificações em tempo real</h3>
-            <p>Receba alertas quando seu pedido entrar em preparo, estiver pronto e for liberado pra retirada.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">📋</div>
-            <h3>Histórico de pedidos</h3>
-            <p>Veja tudo o que você já pediu, repita pedidos favoritos e acompanhe seus combos preferidos.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">🎁</div>
-            <h3>Promoções exclusivas</h3>
-            <p>Tenha acesso a ofertas especiais e combos pensados pra quem usa o app com frequência.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3>Pedido em poucos toques</h3>
-            <p>Mais rapidez no intervalo: escolha, confirme e retire sem enrolação.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">🤖</div>
-            <h3>Sugestões inteligentes</h3>
-            <p>A IA do SnapBite pode indicar lanches com base no seu gosto, horário e estilo de pedido.</p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">📍</div>
-            <h3>Retirada organizada</h3>
-            <p>Evite filas e confusão com status claro, confirmação de retirada e tela de resgate concluído.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TIMELINE -->
-    <section class="timeline-section">
-      <div class="timeline-inner">
-        <div class="timeline-header">
-          <span class="eyebrow">Como funciona</span>
-          <h2>Do pedido ao resgate</h2>
-          <p>Veja como o app acompanha cada etapa até a retirada do seu lanche.</p>
-        </div>
-
-        <div class="timeline">
-          <div class="timeline-column">
-            <div class="timeline-item">
-              <h3>1. Você faz o pedido</h3>
-              <p>Escolhe os itens, confirma tudo e recebe o pedido no seu histórico.</p>
-            </div>
-
-            <div class="timeline-item">
-              <h3>2. O preparo começa</h3>
-              <p>O app mostra que o pedido entrou em produção e avisa em tempo real.</p>
-            </div>
-          </div>
-
-          <div class="timeline-line"></div>
-
-          <div class="timeline-column">
-            <div class="timeline-item">
-              <h3>3. Pedido pronto</h3>
-              <p>Você recebe a notificação de que já pode buscar o lanche no balcão.</p>
-            </div>
-
-            <div class="timeline-item">
-              <h3>4. Pedido resgatado</h3>
-              <p>Depois da retirada, o app registra a confirmação e mostra o pedido concluído.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta-section">
-      <div class="cta-inner">
-        <h2>Quer testar quando lançar?</h2>
-        <p>O SnapBite App vai deixar seu intervalo ainda mais rápido. Entre cedo nessa novidade e acompanhe as próximas atualizações.</p>
-
-        <div class="cta-buttons">
-          <a href="index.html" class="app-btn-primary">
-            <i class="fa-solid fa-house"></i>
-            Voltar para home
-          </a>
-          <a href="IA.html" class="app-btn-secondary">Conhecer a IA</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- MODAL NOTIFICAÇÃO -->
-  <div id="modal-notificacao" class="modal-overlay hidden">
-    <div class="modal-content" style="max-width: 400px;">
-      <div class="modal-header">
-        <h2>Receba notificações do SnapBite App</h2>
-        <button class="modal-close" aria-label="Fechar modal">
-          <i class="fa-solid fa-times"></i>
-        </button>
-      </div>
-
-      <div class="modal-body">
-        <p style="color: var(--cinza-q); margin-bottom: 20px;">
-          Deixe seu email e seja um dos primeiros a saber quando o app estiver disponível para iOS e Android.
-        </p>
-
-        <form id="form-notificacao">
-          <div style="margin-bottom: 16px;">
-            <label for="notif-nome" style="display: block; font-weight: 600; margin-bottom: 6px; color: var(--preto-q);">
-              Seu nome
-            </label>
-            <input 
-              type="text" 
-              id="notif-nome" 
-              placeholder="Ex: João Silva" 
-              required
-              style="width: 100%; padding: 10px 12px; border: 1px solid var(--cinza-borda); border-radius: 6px; font-size: 0.95rem; font-family: inherit;"
-            >
-          </div>
-
-          <div style="margin-bottom: 20px;">
-            <label for="notif-email" style="display: block; font-weight: 600; margin-bottom: 6px; color: var(--preto-q);">
-              Seu email
-            </label>
-            <input 
-              type="email" 
-              id="notif-email" 
-              placeholder="seu@email.com" 
-              required
-              style="width: 100%; padding: 10px 12px; border: 1px solid var(--cinza-borda); border-radius: 6px; font-size: 0.95rem; font-family: inherit;"
-            >
-          </div>
-
-          <button 
-            type="submit" 
-            class="app-btn-primary" 
-            style="width: 100%; justify-content: center;"
-            id="btn-enviar-notif"
-          >
-            <i class="fa-solid fa-bell"></i>
-            Me notifique
-          </button>
-        </form>
-
-        <p style="font-size: 0.85rem; color: var(--cinza-q); margin-top: 12px; text-align: center;">
-          Respeitamos sua privacidade. Você pode desinscrever-se a qualquer momento.
-        </p>
+    <!-- HERO -->
+    <div class="page-hero">
+      <div class="page-hero-inner">
+        <span class="eyebrow">Conheça a gente</span>
+        <h1>Sobre nós</h1>
+        <p>Somos estudantes do SENAI que acreditam que o intervalo pode ser muito mais do que uma fila. O SnapBite nasceu da nossa vontade de resolver um problema real com tecnologia de verdade.</p>
       </div>
     </div>
-  </div>
 
-  <style>
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      animation: fadeIn 0.3s ease;
-    }
+    <!-- MISSÃO -->
+    <section class="missao-section">
+      <div class="missao-inner">
+        <div class="missao-texto">
+          <span class="eyebrow">Nossa missão</span>
+          <h2>Tecnologia feita por <em>alunos</em>, pra alunos</h2>
+          <p>O SnapBite é um projeto integrador do curso de Web Design do SENAI. Nascemos de uma pergunta simples: <strong>por que o intervalo ainda precisa ser correria?</strong></p>
+          <p>A ideia virou protótipo, o protótipo virou site, o site virou sistema completo — com cardápio, carrinho, autenticação, IA e painel de atendimento. Tudo construído por nós, do zero.</p>
+          <div class="missao-pilares">
+            <div class="pilar">
+              <div class="pilar-icon">🎓</div>
+              <div class="pilar-texto">
+                <strong>Projeto integrador real</strong>
+                <span>Desenvolvido como trabalho final do curso de Desenvolvimento de Sistemas no SENAI Niterói.</span>
+              </div>
+            </div>
+            <div class="pilar">
+              <div class="pilar-icon">🛠️</div>
+              <div class="pilar-texto">
+                <strong>Tecnologia de ponta</strong>
+                <span>Firebase, autenticação Google, IA integrada, sistema de chat em tempo real e skeleton loading.</span>
+              </div>
+            </div>
+            <div class="pilar">
+              <div class="pilar-icon">🤝</div>
+              <div class="pilar-texto">
+                <strong>Feito pra comunidade</strong>
+                <span>Cada funcionalidade foi pensada pra facilitar a vida dos alunos e funcionários do SENAI.</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    .modal-overlay.hidden {
-      display: none;
-    }
+        <div class="missao-visual">
+          <div class="missao-card-stack">
+            <div class="mcard mcard-back"></div>
+            <div class="mcard mcard-front">
+              <div class="mcard-logo">Snap<span>Bite</span></div>
+              <div class="mcard-tag"><i class="fa-solid fa-circle" style="font-size:.5rem"></i> Projeto ativo</div>
+              <div class="mcard-stats-row">
+                <div class="mcard-stat">
+                  <span class="num">14</span>
+                  <span class="label">páginas no site</span>
+                </div>
+                <div class="mcard-stat">
+                  <span class="num">100%</span>
+                  <span class="label">feito por alunos</span>
+                </div>
+                <div class="mcard-stat">
+                  <span class="num">1</span>
+                  <span class="label">IA integrada</span>
+                </div>
+                <div class="mcard-stat">
+                  <span class="num">∞</span>
+                  <span class="label">intervalo sem fila</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    <!-- HISTÓRIA -->
+    <section class="historia-section">
+      <div class="historia-inner">
+        <div class="historia-header">
+          <span class="eyebrow">Nossa trajetória</span>
+          <h2>Como o SnapBite chegou até aqui</h2>
+          <p>De uma ideia de sala de aula a um sistema completo pronto pra usar.</p>
+        </div>
 
-    .modal-content {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-      animation: slideUp 0.3s ease;
-      max-width: 90%;
-    }
+        <div class="historia-steps">
+          <div class="historia-step">
+            <div class="hstep-dot">💡</div>
+            <div class="hstep-body">
+              <span class="hstep-tag">O começo</span>
+              <h3>A ideia surgiu no intervalo</h3>
+              <p>Cansados de ver a fila do lanche tomar metade do tempo livre, a turma decidiu transformar o problema em projeto. A proposta: criar um sistema de pedidos online pro SENAI, do zero.</p>
+            </div>
+          </div>
 
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
+          <div class="historia-step">
+            <div class="hstep-dot">🎨</div>
+            <div class="hstep-body">
+              <span class="hstep-tag">Design & identidade</span>
+              <h3>Nasceu o visual do SnapBite</h3>
+              <p>Escolhemos as cores, tipografia e o nome. A paleta vinho com mostarda virou a identidade da marca — séria, mas com personalidade. O cardápio foi o primeiro módulo a ganhar vida.</p>
+            </div>
+          </div>
 
-    .modal-header {
-      padding: 24px;
-      border-bottom: 1px solid var(--cinza-borda);
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
+          <div class="historia-step">
+            <div class="hstep-dot">🔥</div>
+            <div class="hstep-body">
+              <span class="hstep-tag">Backend & autenticação</span>
+              <h3>Firebase entrou em cena</h3>
+              <p>Integramos Firebase Auth com login Google, Firestore para pedidos em tempo real e Storage pra fotos de perfil. A partir daí, o SnapBite deixou de ser um site estático e virou um sistema vivo.</p>
+            </div>
+          </div>
 
-    .modal-header h2 {
-      margin: 0;
-      font-size: 1.4rem;
-      color: var(--preto-q);
-      flex: 1;
-    }
+          <div class="historia-step">
+            <div class="hstep-dot">🤖</div>
+            <div class="hstep-body">
+              <span class="hstep-tag">Inteligência Artificial</span>
+              <h3>A IA SnapBite ganhou voz</h3>
+              <p>Integramos um assistente de IA capaz de sugerir combos, responder dúvidas e orientar os alunos em tempo real. Um diferencial que poucos projetos de faculdade têm, ainda menos do ensino médio técnico.</p>
+            </div>
+          </div>
 
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      cursor: pointer;
-      color: var(--cinza-q);
-      padding: 0;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      transition: background var(--t);
-    }
+          <div class="historia-step">
+            <div class="hstep-dot">🚀</div>
+            <div class="hstep-body">
+              <span class="hstep-tag">Hoje</span>
+              <h3>Sistema completo no ar</h3>
+              <p>Cardápio, carrinho, promoções, fidelidade, chat de suporte, painel de funcionários, perfil do usuário e IA integrada. O SnapBite está no GitHub Pages e pronto pra ser usado de verdade.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    .modal-close:hover {
-      background: var(--creme);
-    }
+    <!-- EQUIPE -->
+    <section class="equipe-section">
+      <div class="equipe-inner">
+        <div class="equipe-header">
+          <span class="eyebrow">Quem faz acontecer</span>
+          <h2>A equipe SnapBite</h2>
+          <p>Alunos do curso de Desenvolvimento de Sistemas do SENAI, unidos por código, café e vontade de inovar.</p>
+        </div>
+        <div class="equipe-grid">
+          <div class="membro-card">
+            <div class="membro-avatar">V</div>
+            <div class="membro-nome">Very</div>
+            <div class="membro-cargo">Dev líder & Design</div>
+            <div class="membro-desc">Responsável pela arquitetura do projeto, identidade visual e desenvolvimento das principais features.</div>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">A</div>
+            <div class="membro-nome">Equipe</div>
+            <div class="membro-cargo">Desenvolvimento</div>
+            <div class="membro-desc">Contribuiu com o desenvolvimento de módulos, testes e integração das funcionalidades do sistema.</div>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">S</div>
+            <div class="membro-nome">SENAI</div>
+            <div class="membro-cargo">Orientação</div>
+            <div class="membro-desc">Apoio educacional do SENAI Niterói, que forneceu a estrutura e o contexto real pra o projeto existir.</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    .modal-body {
-      padding: 24px;
-    }
-  </style>
+    <!-- VALORES -->
+    <section class="valores-section">
+      <div class="valores-inner">
+        <div class="valores-header">
+          <span class="eyebrow">O que acreditamos</span>
+          <h2>Nossos valores</h2>
+          <p>O SnapBite não é só um projeto de escola. É a prova de que aluno pode construir coisa séria.</p>
+        </div>
+        <div class="valores-grid">
+          <div class="valor-card">
+            <div class="valor-icon">⚡</div>
+            <h3>Agilidade</h3>
+            <p>Intervalo é curto. Cada segundo conta. O SnapBite existe pra você gastar menos tempo esperando e mais aproveitando.</p>
+          </div>
+          <div class="valor-card">
+            <div class="valor-icon">🎯</div>
+            <h3>Foco no usuário</h3>
+            <p>Cada decisão de design e tecnologia foi tomada pensando em quem vai usar: o aluno do SENAI no dia a dia.</p>
+          </div>
+          <div class="valor-card">
+            <div class="valor-icon">🔓</div>
+            <h3>Transparência</h3>
+            <p>Código aberto, projeto real. Sem enrolação, sem promessa vazia. O que está no site é o que funciona.</p>
+          </div>
+          <div class="valor-card">
+            <div class="valor-icon">📚</div>
+            <h3>Aprendizado contínuo</h3>
+            <p>Cada bug corrigido, cada feature entregue é uma lição. O projeto cresceu junto com quem o construiu.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <script>
-    (function () {
-      // Gerenciar modal de notificações
-      const btnNotificacao = document.getElementById('btn-notificacao');
-      const modalNotificacao = document.getElementById('modal-notificacao');
-      const formNotificacao = document.getElementById('form-notificacao');
-      const btnEnviar = document.getElementById('btn-enviar-notif');
-      const modalClose = document.querySelector('.modal-close');
+    <!-- CTA FINAL -->
+    <section class="sobre-cta">
+      <div class="sobre-cta-inner">
+        <h2>Quer conhecer mais?</h2>
+        <p>Explore o cardápio, teste a IA, confira as promoções — ou só chegue no balcão e peça um lanche. O SnapBite é real e está aqui pra você.</p>
+        <div class="sobre-cta-btns">
+          <a href="cardapio.html" class="btn-primary">
+            <i class="fa-solid fa-utensils" style="margin-right:8px"></i>
+            Ver cardápio
+          </a>
+          <a href="contato.html" class="btn-ghost">Falar com a gente</a>
+        </div>
+      </div>
+    </section>
 
-      if (!btnNotificacao || !modalNotificacao) return;
-
-      // Abrir modal
-      btnNotificacao.addEventListener('click', () => {
-        modalNotificacao.classList.remove('hidden');
-      });
-
-      // Fechar modal
-      function fecharModal() {
-        modalNotificacao.classList.add('hidden');
-      }
-
-      modalClose.addEventListener('click', fecharModal);
-
-      // Fechar ao clicar fora
-      modalNotificacao.addEventListener('click', (e) => {
-        if (e.target === modalNotificacao) {
-          fecharModal();
-        }
-      });
-
-      // Enviar interesse de notificação
-      formNotificacao.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const nome = document.getElementById('notif-nome').value.trim();
-        const email = document.getElementById('notif-email').value.trim();
-
-        if (!nome || !email) {
-          window.showToast?.('Preencha todos os campos.', 'warning');
-          return;
-        }
-
-        btnEnviar.disabled = true;
-        btnEnviar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
-
-        try {
-          const response = await fetch('http://localhost:3000/api/registrar-interesse-app', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, email })
-          });
-
-          const data = await response.json();
-
-          if (data.ok) {
-            window.showToast?.('Perfeito! Você receberá notificações do app 🚀', 'success');
-            formNotificacao.reset();
-            fecharModal();
-          } else {
-            window.showToast?.(data.erro || 'Erro ao registrar interesse.', 'error');
-          }
-        } catch (err) {
-          console.error('Erro:', err);
-          window.showToast?.('Erro ao conectar. Tente novamente.', 'error');
-        } finally {
-          btnEnviar.disabled = false;
-          btnEnviar.innerHTML = '<i class="fa-solid fa-bell"></i> Me notifique';
-        }
-      });
-    })();
-  </script>
+  </main>
 
   <script src="js/components.js"></script>
   <script src="js/app.js"></script>
-
-  <script>
-    // Animação do mockup do celular
-    (function () {
-      const btnPronto = document.getElementById('pedido-pronto-btn');
-      const panelPronto = document.getElementById('app-panel-pronto');
-      const panelResgatado = document.getElementById('app-panel-resgatado');
-      if (!btnPronto || !panelPronto || !panelResgatado) return;
-
-      btnPronto.addEventListener('click', function () {
-        btnPronto.classList.add('is-pressed');
-        btnPronto.addEventListener('animationend', function handler() {
-          btnPronto.removeEventListener('animationend', handler);
-          btnPronto.classList.remove('is-pressed');
-          panelPronto.classList.remove('active');
-          panelResgatado.classList.add('active');
-
-          // Voltar para a tela inicial após 3s
-          setTimeout(function () {
-            panelResgatado.classList.remove('active');
-            panelPronto.classList.add('active');
-          }, 3000);
-        });
-      });
-    })();
-  </script>
-
   <script type="module" src="backend/firebase-auth.js"></script>
 </body>
 </html>

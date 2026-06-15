@@ -129,3 +129,24 @@
   object-position: center;
   display: block;
 }
+
+
+.preco-antigo{
+  text-decoration: line-through;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.badge-desconto{
+  position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #e53935;
+    color: white;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}

@@ -128,21 +128,21 @@
       transition: transform 0.3s ease;
     }
 
-    .faq-item.open .faq-question i {
+    .faq-item.aberto .faq-question i {
       transform: rotate(180deg);
     }
 
     .faq-answer {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.3s ease;
+      transition: max-height 0.4s ease, padding-top 0.3s ease;
       color: var(--cinza-q);
       line-height: 1.7;
       padding-top: 0;
     }
 
-    .faq-item.open .faq-answer {
-      max-height: 200px;
+    .faq-item.aberto .faq-answer {
+      max-height: 300px;
       padding-top: 12px;
     }
 
@@ -338,7 +338,7 @@
         </h2>
 
         <div class="faq-item">
-          <div class="faq-question">
+          <div class="faq-question" onclick="toggleFaq(this)">
             <span>Quando o app estará disponível?</span>
             <i class="fa-solid fa-chevron-down"></i>
           </div>
@@ -348,7 +348,7 @@
         </div>
 
         <div class="faq-item">
-          <div class="faq-question">
+          <div class="faq-question" onclick="toggleFaq(this)">
             <span>Será preciso pagar para usar?</span>
             <i class="fa-solid fa-chevron-down"></i>
           </div>
@@ -358,7 +358,7 @@
         </div>
 
         <div class="faq-item">
-          <div class="faq-question">
+          <div class="faq-question" onclick="toggleFaq(this)">
             <span>Posso fazer pedidos pelo site ou só pelo app?</span>
             <i class="fa-solid fa-chevron-down"></i>
           </div>
@@ -368,7 +368,7 @@
         </div>
 
         <div class="faq-item">
-          <div class="faq-question">
+          <div class="faq-question" onclick="toggleFaq(this)">
             <span>Meus dados estão seguros?</span>
             <i class="fa-solid fa-chevron-down"></i>
           </div>
@@ -378,7 +378,7 @@
         </div>
 
         <div class="faq-item">
-          <div class="faq-question">
+          <div class="faq-question" onclick="toggleFaq(this)">
             <span>Preciso ter internet para usar?</span>
             <i class="fa-solid fa-chevron-down"></i>
           </div>
@@ -395,7 +395,7 @@
         <button type="button" class="app-btn-primary" id="btn-notificacao-final" style="background: white; color: var(--vinho); border: none; cursor: pointer; font-size: 1rem; padding: 14px 28px; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 18px rgba(0,0,0,0.18); transition: transform 0.2s ease, box-shadow 0.2s ease;">
         <a href="index.html">
             <i class="fa-solid fa-arrow-left"></i>
-            Voltar para o início
+            Voltar para o site
           </a>
         </button>
       </div>

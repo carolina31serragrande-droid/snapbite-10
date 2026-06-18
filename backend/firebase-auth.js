@@ -204,6 +204,9 @@ function _redirecionarAposLogin() {
 
   if (estaNoLogin) {
     window.location.replace(destinoSeguro);
+  } else {
+    // Login feito via modal em outra página — recarrega pra atualizar o estado
+    window.location.reload();
   }
 }
 
@@ -394,8 +397,11 @@ async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermo
 // ─────────────────────────────────────────────────────
 async function recuperarSenha(email) {
   try {
+    const urlRecuperacao = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`;
+
     await sendPasswordResetEmail(auth, email, {
-      url: `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`
+      url: `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`,
+      handleCodeInApp: true
     });
     return { ok: true };
   } catch (err) {

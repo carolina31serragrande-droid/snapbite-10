@@ -73,20 +73,6 @@ document.body.insertAdjacentHTML('afterbegin', `
         </a>
       </div>
 
-      <!-- Seção: Fidelidade — destaque -->
-      <div class="menu-section menu-section-fidelidade">
-        <a href="fidelidade.html" class="menu-item-fidelidade">
-          <span class="menu-fid-icon">
-            <i class="fa-solid fa-star"></i>
-          </span>
-          <div class="menu-fid-info">
-            <span class="menu-fid-titulo">Cartão Fidelidade</span>
-            <span class="menu-fid-sub">Acumule pontos e ganhe prêmios</span>
-          </div>
-          <span class="menu-fid-arrow">›</span>
-        </a>
-      </div>
-
       <!-- Seção: Explorar -->
       <div class="menu-section">
         <span class="menu-section-label">Explorar</span>

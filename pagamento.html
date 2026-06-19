@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — SnapBite</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    :root {
+      --azul-senai: #001448;
+      --azul-brilhante: #003399;
+      --vermelho-senai: #E30613;
+      --mostarda: #ffb703;
+      --cinza-fundo: #f4f6f9;
+      --texto-escuro: #1e293b;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--cinza-fundo);
+      color: var(--texto-escuro);
+      margin: 0;
+      padding: 0;
+    }
+
+    .checkout-container {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 32px;
+    }
+
+    @media (max-width: 850px) {
+      .checkout-container {
+        grid-template-columns: 1fr;
+        margin: 20px auto;
+      }
+    }
+
+    .checkout-main, .checkout-sidebar {
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 10px 25px rgba(0, 20, 72, 0.05);
+      border: 1px solid rgba(0, 20, 72, 0.08);
+    }
+
+    h2, h3 {
+      margin-top: 0;
+      color: var(--azul-senai);
+    }
+
+    /* Abas de Método de Pagamento */
+    .payment-methods {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .method-btn {
+      padding: 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      color: #64748b;
+    }
+
+    .method-btn.active {
+      border-color: var(--azul-brilhante);
+      color: var(--azul-brilhante);
+      background: rgba(0, 51, 153, 0.04);
+    }
+
+    /* Áreas de conteúdo de pagamento */
+    .payment-panel {
+      display: none;
+    }
+
+    .payment-panel.active {
+      display: block;
+    }
+
+    /* Formulários e Inputs */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #475569;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--azul-brilhante);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Painel do Pix */
+    .pix-wrapper {
+      text-align: center;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px dashed #cbd5e1;
+    }
+
+    .qrcode-placeholder {
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 16px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+    }
+
+    .pix-copia-e-cola {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    /* Resumo do Pedido */
+    .summary-plan-box {
+      background: linear-gradient(135deg, var(--azul-senai) 0%, var(--azul-brilhante) 100%);
+      color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .summary-plan-box.pro-active {
+      background: linear-gradient(135deg, var(--vermelho-senai) 0%, #b8050f 100%);
+    }
+
+    .summary-price {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding-top: 16px;
+      border-top: 2px dashed #e2e8f0;
+      margin-top: 16px;
+    }
+
+    .btn-pay {
+      width: 100%;
+      background: var(--vermelho-senai);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(227, 6, 19, 0.25);
+      transition: all 0.2s;
+    }
+
+    .btn-pay:hover {
+      background: #b8050f;
+      transform: translateY(-2px);
+    }
+
+    .timer {
+      font-size: 0.9rem;
+      color: #ef4444;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="checkout-container">
+    
+    <!-- LADO ESQUERDO: MÉTODOS DE PAGAMENTO -->
+    <main class="checkout-main">
+      <h2>Método de Pagamento</h2>
+      <p>Escolha como deseja assinar seu plano SnapBite.</p>
+
+      <div class="payment-methods">
+        <button class="method-btn active" onclick="switchTab('pix')">
+          <i class="fa-solid fa-pix"></i> Pix Instantâneo
+        </button>
+        <button class="method-btn" onclick="switchTab('card')">
+          <i class="fa-solid fa-credit-card"></i> Cartão de Crédito
+        </button>
+      </div>
+
+      <!-- PAINEL PIX -->
+      <div id="panel-pix" class="payment-panel active">
+        <div class="pix-wrapper">
+          <div class="qrcode-placeholder">📱</div>
+          <p style="margin:0; font-weight:600;">Escaneie o QR Code no seu app do banco</p>
+          <div class="timer"><i class="fa-regular fa-clock"></i> Expira em <span id="countdown">10:00</span></div>
+          
+          <div class="pix-copia-e-cola">
+            <input type="text" class="form-control" id="pixCode" value="00020126580014br.gov.bcb.pix0136snapbite-senai-suporte-fake-key2026" readonly>
+            <button class="method-btn" style="padding:12px; margin:0;" onclick="copyPix()"><i class="fa-regular fa-copy"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAINEL CARTÃO -->
+      <div id="panel-card" class="payment-panel">
+        <form id="cardForm" onsubmit="processPayment(event)">
+          <div class="form-group">
+            <label for="cardName">Nome impresso no cartão</label>
+            <input type="text" id="cardName" class="form-control" placeholder="João da Silva" required>
+          </div>
+          <div class="form-group">
+            <label for="cardNumber">Número do cartão</label>
+            <input type="text" id="cardNumber" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cardExpiry">Validade</label>
+              <input type="text" id="cardExpiry" class="form-control" placeholder="MM/AA" maxlength="5" required>
+            </div>
+            <div class="form-group">
+              <label for="cardCvc">CVC</label>
+              <input type="text" id="cardCvc" class="form-control" placeholder="123" maxlength="4" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-pay" style="background-color: var(--azul-senai); box-shadow: none;">Finalizar Assinatura</button>
+        </form>
+      </div>
+    </main>
+
+    <!-- LADO DIREITO: RESUMO -->
+    <aside class="checkout-sidebar">
+      <h3>Resumo da Assinatura</h3>
+      
+      <div class="summary-plan-box" id="planBox">
+        <div id="planName" style="font-weight: 700; font-size: 1.1rem;">Plano...</div>
+        <div id="planDesc" style="font-size: 0.85rem; opacity: 0.8; margin-top: 4px;">Carregando detalhes...</div>
+        <div class="summary-price" id="planPrice">R$ 0,00</div>
+      </div>
+
+      <div style="color: #64748b; font-size: 0.9rem; display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; justify-content:space-between;">
+          <span>Subtotal</span>
+          <span id="subtotalVal">R$ 0,00</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Taxa de adesão</span>
+          <span style="color:#22c55e; font-weight:600;">Grátis</span>
+        </div>
+      </div>
+
+      <div class="total-row">
+        <span>Total</span>
+        <span id="totalVal" style="color: var(--azul-senai)">R$ 0,00</span>
+      </div>
+      
+      <p style="font-size:0.75rem; color:#94a3b8; text-align:center; margin-top:24px;">
+        Ao confirmar, você concorda com os termos de renovação recorrente mensal do SnapBite.
+      </p>
+    </aside>
+
+  </div>
+
+  <script>
+    // Banco de dados fake interno dos planos baseado na sua home
+    const planosInfo = {
+      start: { nome: 'Plano Start', desc: '5% OFF + Promoções Semanais', preco: 'R$ 9,90', val: 9.90 },
+      pro: { nome: 'Plano Pro 🚀', desc: '15% OFF + Frete Interno Grátis + 2 Combos/mês', preco: 'R$ 19,90', val: 19.90 },
+      elite: { nome: 'Plano Elite', desc: '25% OFF + Combo Exclusivo Semanal + Suporte VIP', preco: 'R$ 39,90', val: 39.90 }
+    };
+
+    // Pega o plano vindo da URL (?plano=pro)
+    const urlParams = new URLSearchParams(window.location.search);
+    let planoSelecionado = urlParams.get('plano') || 'start'; 
+    planoSelecionado = planoSelecionado.toLowerCase();
+
+    // Se o usuário digitar algo inválido na URL, joga pro start
+    if(!planosInfo[planoSelecionado]) planoSelecionado = 'start';
+
+    // Monta a tela com as informações corretas do plano
+    const plano = planosInfo[planoSelecionado];
+    document.getElementById('planName').innerText = plano.nome;
+    document.getElementById('planDesc').innerText = plano.desc;
+    document.getElementById('planPrice').innerText = plano.preco;
+    document.getElementById('subtotalVal').innerText = plano.preco;
+    document.getElementById('totalVal').innerText = plano.preco;
+
+    // Se for o Plano Pro (Mais vendido), pinta de Vermelho para dar match com o destaque da home!
+    if (planoSelecionado === 'pro') {
+      document.getElementById('planBox').classList.add('pro-active');
+      document.getElementById('totalVal').style.color = 'var(--vermelho-senai)';
+    }
+
+    // Alternar entre abas (Pix / Cartão)
+    function switchTab(type) {
+      document.querySelectorAll('.method-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.payment-panel').forEach(panel => panel.classList.remove('active'));
+      
+      if(type === 'pix') {
+        event.currentTarget.classList.add('active');
+        document.getElementById('panel-pix').classList.add('active');
+      } else {
+        event.currentTarget.classList.add('active');
+        document.getElementById('panel-card').classList.add('active');
+      }
+    }
+
+    // Copiar código pix
+    function copyPix() {
+      const pixInput = document.getElementById('pixCode');
+      pixInput.select();
+      document.execCommand('copy');
+      alert('Código Pix Copia e Cola copiado com sucesso! Transfira no app do seu banco.');
+    }
+
+    // Processamento do formulário de cartão
+    function processPayment(e) {
+      e.preventDefault();
+      alert('Processando pagamento via Firebase Auth/Gateway integrado... Assinatura do ' + plano.nome + ' ativada!');
+      window.location.href = 'index.html'; // Redireciona de volta para a home pós sucesso
+    }
+
+    // Contador regressivo do Pix (10 Minutos)
+    let time = 600;
+    const countdownEl = document.getElementById('countdown');
+    setInterval(() => {
+      if(time <= 0) return;
+      time--;
+      let minutes = Math.floor(time / 60);
+      let seconds = time % 60;
+      seconds = seconds < 10 ? '0' + seconds : seconds;
+      countdownEl.innerHTML = `${minutes}:${seconds}`;
+    }, 1000);
+  </script>
+
+</body>
+</html>

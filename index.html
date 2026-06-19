@@ -481,6 +481,65 @@
       </div>
     </section>
 
+    <!-- PLANOS -->
+    <section class="sec-planos">
+      <div class="planos-inner">
+        <div class="planos-header">
+          <span class="eyebrow" style="color:#ffb703">Assinaturas SnapBite</span>
+          <h2>Escolha o plano ideal para seu intervalo.</h2>
+          <p>Economize em pedidos, desbloqueie benefícios exclusivos e tenha vantagens todos os dias dentro da plataforma SnapBite.</p>
+        </div>
+
+        <div class="planos-grid">
+          <div class="plano-card">
+            <div class="plano-nome">Plano Start</div>
+            <p>Perfeito para quem faz pedidos ocasionais.</p>
+            <div class="plano-preco">R$ 9,90 <span>/mês</span></div>
+            <ul class="plano-beneficios">
+              <li><i class="fa-solid fa-check"></i> 5% OFF em todos os pedidos</li>
+              <li><i class="fa-solid fa-check"></i> Promoções semanais</li>
+              <li><i class="fa-solid fa-check"></i> Cashback em combos</li>
+              <li><i class="fa-solid fa-check"></i> Atendimento prioritário</li>
+            </ul>
+            <a href="pagamento.html" class="plano-btn">
+               Assinar agora               
+            </a>
+          </div>
+
+          <div class="plano-card plano-destaque">
+            <div class="plano-tag">Mais vendido</div>
+            <div class="plano-nome">Plano Pro</div>
+            <p>Ideal para alunos que usam o SnapBite todos os dias.</p>
+            <div class="plano-preco">R$ 19,90 <span>/mês</span></div>
+            <ul class="plano-beneficios">
+              <li><i class="fa-solid fa-check"></i> 15% OFF em pedidos</li>
+              <li><i class="fa-solid fa-check"></i> Frete grátis interno</li>
+              <li><i class="fa-solid fa-check"></i> 2 combos grátis por mês</li>
+              <li><i class="fa-solid fa-check"></i> Acesso antecipado às promoções</li>
+            </ul>
+            <a href="pagamento.html?plano=pro" class="plano-btn">
+               Quero o Pro
+            </a>
+          </div>
+
+          <div class="plano-card">
+            <div class="plano-nome">Plano Elite</div>
+            <p>Experiência premium com o máximo de vantagens.</p>
+            <div class="plano-preco">R$ 39,90 <span>/mês</span></div>
+            <ul class="plano-beneficios">
+              <li><i class="fa-solid fa-check"></i> 25% OFF em pedidos</li>
+              <li><i class="fa-solid fa-check"></i> Combo exclusivo toda semana</li>
+              <li><i class="fa-solid fa-check"></i> Brindes e cupons especiais</li>
+              <li><i class="fa-solid fa-check"></i> Suporte VIP SnapBite</li>
+            </ul>
+            <a href="pagamento.html?plano=elite" class="plano-btn">
+               Virar Elite
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- CTA -->
     <section class="sec-cta">
       <div class="sec-cta-inner">
@@ -494,6 +553,252 @@
   <script src="js/components.js"></script>
   <script src="js/app.js"></script>
   <script type="module" src="backend/firebase-auth.js"></script>
+
+
+<style>
+.sec-planos {
+  position: relative;
+  padding: 96px 24px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(227, 6, 19, 0.18), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(255, 183, 3, 0.12), transparent 50%),
+    linear-gradient(160deg, #001448 0%, #001f5c 55%, #002b73 100%);
+  overflow: hidden;
+}
+
+/* leve textura/brilho no fundo, igual clima do sec-app */
+.sec-planos::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 26px 26px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.planos-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.planos-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 56px;
+}
+
+.planos-header .eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.planos-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+.planos-header p {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+/* GRID */
+.planos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .planos-grid {
+    grid-template-columns: 1fr;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+}
+
+/* CARD */
+.plano-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  padding: 36px 28px;
+  backdrop-filter: blur(6px);
+  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.plano-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 183, 3, 0.4);
+}
+
+.plano-nome {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.plano-card > p {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin-bottom: 22px;
+  min-height: 42px;
+}
+
+.plano-preco {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 26px;
+}
+
+.plano-preco span {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.plano-beneficios {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px;
+  flex-grow: 1;
+}
+
+.plano-beneficios li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.82);
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.plano-beneficios li:last-child {
+  border-bottom: none;
+}
+
+.plano-beneficios i {
+  color: #ffb703;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* Ajuste das tags <a> para agirem como os botões */
+.plano-btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+  padding: 13px 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+}
+
+.plano-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* CARD EM DESTAQUE (Plano Pro) */
+.plano-destaque {
+  background: linear-gradient(165deg, #E30613 0%, #b8050f 100%);
+  border-color: transparent;
+  box-shadow: 0 20px 50px rgba(227, 6, 19, 0.35);
+  transform: scale(1.04);
+}
+
+.plano-destaque:hover {
+  transform: scale(1.04) translateY(-6px);
+  border-color: transparent;
+  background: linear-gradient(165deg, #ff1f2e 0%, #c2060f 100%);
+}
+
+@media (max-width: 900px) {
+  .plano-destaque {
+    transform: none;
+  }
+  .plano-destaque:hover {
+    transform: translateY(-6px);
+  }
+}
+
+.plano-destaque .plano-nome,
+.plano-destaque .plano-preco,
+.plano-destaque > p {
+  color: #fff;
+}
+
+.plano-destaque .plano-preco span {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.plano-destaque .plano-beneficios li {
+  color: rgba(255, 255, 255, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.18);
+}
+
+.plano-destaque .plano-beneficios i {
+  color: #fff;
+}
+
+.plano-destaque .plano-btn {
+  background: #fff;
+  color: #E30613;
+  border: none;
+}
+
+.plano-destaque .plano-btn:hover {
+  background: #fff5f5;
+  transform: translateY(-2px);
+}
+
+/* Linha corrigida e finalizada */
+.plano-tag {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: #ffb703;
+  color: #001448;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+</style>
 
 </body>
 </html>

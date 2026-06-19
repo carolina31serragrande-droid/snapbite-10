@@ -249,15 +249,35 @@
     <div class="prod-card" data-categoria="bebidas">
       <div class="prod-img">
           <span class="badge-desconto">15% OFF</span>
-          <img src="https://img.freepik.com/fotos-premium/tres-copos-de-milkshake-de-sabores-variados-milkshake-de-chocolate-baunilha-e-morango_434193-9.jpg?w=740" alt="Milk Shake do Dia">
+          <img id="milkshake-card-img" src="https://img.freepik.com/fotos-premium/tres-copos-de-milkshake-de-sabores-variados-milkshake-de-chocolate-baunilha-e-morango_434193-9.jpg?w=740" alt="Milk Shake do Dia" style="transition:opacity 0.3s;">
       </div>
   
       <div class="prod-body">
           <h3 class="prod-nome">Milk Shake do Dia</h3>
   
-          <div class="prod-desc">
-              Sabor surpresa do dia, sempre cremoso.
+          <div class="prod-desc" style="margin-bottom:8px;">
+              Escolha o sabor:
           </div>
+
+          <!-- Opções de sabor dentro do card -->
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+            <button onclick="escolherSaborMS('morango', this)"
+              id="ms-btn-morango"
+              style="border:2px solid #E30613; background:#E30613; color:#fff; border-radius:20px; padding:4px 10px; font-size:12px; cursor:pointer; font-weight:600; transition:all 0.2s;">
+              🍓 Morango
+            </button>
+            <button onclick="escolherSaborMS('chocolate', this)"
+              id="ms-btn-chocolate"
+              style="border:2px solid #5c3317; background:#fff; color:#5c3317; border-radius:20px; padding:4px 10px; font-size:12px; cursor:pointer; font-weight:600; transition:all 0.2s;">
+              🍫 Chocolate
+            </button>
+            <button onclick="escolherSaborMS('baunilha', this)"
+              id="ms-btn-baunilha"
+              style="border:2px solid #b8860b; background:#fff; color:#b8860b; border-radius:20px; padding:4px 10px; font-size:12px; cursor:pointer; font-weight:600; transition:all 0.2s;">
+              🍦 Baunilha
+            </button>
+          </div>
+
           <div class="prod-foot">
             <div>
               <span class="prod-preco">R$ 12,75</span><br>
@@ -265,8 +285,7 @@
                 R$ 15,00
               </small>
             </div>
-  
-              <button class="btn-add">+</button>
+              <button class="btn-add" onclick="adicionarMilkshake()">+</button>
           </div>
       </div>
   </div>
@@ -556,5 +575,52 @@
     
     });
     </script>
+  <script>
+    // ---- Seleção de sabor Milk Shake (dentro do card) ----
+    const msSabores = {
+      morango:   { img: 'img/img4.png',   nome: 'Milk Shake Morango',   emoji: '🍓', cor: '#E30613' },
+      chocolate: { img: 'img/img5.png', nome: 'Milk Shake Chocolate', emoji: '🍫', cor: '#5c3317' },
+      baunilha:  { img: 'img/img6.png',  nome: 'Milk Shake Baunilha',  emoji: '🍦', cor: '#b8860b' }
+    };
+    let msSaborAtual = null; // nenhum selecionado por padrão
+
+    function escolherSaborMS(sabor, btnClicado) {
+      msSaborAtual = sabor;
+      const info = msSabores[sabor];
+
+      // Troca imagem com fade
+      const img = document.getElementById('milkshake-card-img');
+      img.style.opacity = '0';
+      setTimeout(() => { img.src = info.img; img.style.opacity = '1'; }, 200);
+
+      // Atualiza visual dos botões
+      ['morango','chocolate','baunilha'].forEach(s => {
+        const btn = document.getElementById('ms-btn-' + s);
+        const cor = msSabores[s].cor;
+        if (s === sabor) {
+          btn.style.background = cor;
+          btn.style.color = '#fff';
+        } else {
+          btn.style.background = '#fff';
+          btn.style.color = cor;
+        }
+      });
+    }
+
+    function adicionarMilkshake() {
+      if (!msSaborAtual) {
+        alert('Escolha um sabor antes de adicionar! 🍓🍫🍦');
+        return;
+      }
+      const info = msSabores[msSaborAtual];
+      adicionarAoCarrinho({
+        id: 'ms-' + msSaborAtual,
+        nome: info.nome,
+        preco: 12.75,
+        emoji: info.emoji,
+        desc: info.nome
+      });
+    }
+  </script>
 </body>
 </html>

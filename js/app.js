@@ -539,6 +539,8 @@ async function fazerLogin(tipo, dados = {}) {
       App.pendingProduct = null;
       adicionarAoCarrinho(produtoPendente);
     }
+
+    setTimeout(() => window.location.reload(), 800);
   } catch (erro) {
     showToast(erro || 'Erro ao fazer login. Tente novamente.', 'error');
   }
@@ -595,21 +597,31 @@ function initAuthForms() {
 
   document.getElementById('form-login')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const email = document.getElementById('login-email').value;
     const senha = document.getElementById('login-senha').value;
 
-    await fazerLogin('login', { email, senha });
+    if (typeof window.loginComEmailSenha === 'function') {
+      showToast('Conectando...', 'info', 1500);
+      const res = await window.loginComEmailSenha(email, senha);
+      if (!res.ok) showToast(res.msg, 'error');
+    } else {
+      await fazerLogin('login', { email, senha });
+    }
   });
 
   document.getElementById('form-cadastro')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const nome = document.getElementById('cad-nome').value;
     const email = document.getElementById('cad-email').value;
     const senha = document.getElementById('cad-senha').value;
 
-    await fazerLogin('cadastro', { nome, email, senha });
+    if (typeof window.cadastrarComEmailSenha === 'function') {
+      showToast('Criando conta...', 'info', 1500);
+      const res = await window.cadastrarComEmailSenha(nome, email, senha, '', true);
+      if (!res.ok) showToast(res.msg, 'error');
+    } else {
+      await fazerLogin('cadastro', { nome, email, senha });
+    }
   });
 
   document.getElementById('btn-google')?.addEventListener('click', () => {

@@ -189,6 +189,24 @@ function _redirecionarSeWelcome() {
 }
 
 function _redirecionarAposLogin() {
+  alert("FUNÇÃO DE REDIRECIONAMENTO EXECUTOU");
+
+  ...
+}
+  function _redirecionarAposLogin() {
+    console.log(window.location.pathname);
+  
+    const path = window.location.pathname || '';
+  
+    const estaNoLogin =
+      path.endsWith('login.html') ||
+      path.endsWith('/login') ||
+      path.includes('login');
+  
+    console.log(estaNoLogin);
+  
+    ...
+  }
   const params = new URLSearchParams(window.location.search);
   const redirect = params.get('redirect');
   const destinoSeguro = redirect && !redirect.startsWith('http') && !redirect.includes('://')
@@ -201,14 +219,14 @@ function _redirecionarAposLogin() {
 
   const path = window.location.pathname || '';
   const estaNoLogin = path.endsWith('login.html') || path.endsWith('/login') || path.includes('login');
-
+  
   if (estaNoLogin) {
     window.location.replace(destinoSeguro);
   } else {
     // Login feito via modal em outra página — recarrega pra atualizar o estado
     window.location.reload();
   }
-}
+
 
 // ─────────────────────────────────────────────────────
 // Completar cadastro (telefone + termos)

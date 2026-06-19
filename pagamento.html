@@ -7,7 +7,9 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/global.css">
+
   <style>
+
     :root {
       --azul-senai: #001448;
       --azul-brilhante: #003399;
@@ -25,9 +27,30 @@
       padding: 0;
     }
 
+    .nav-top {
+      max-width: 1000px;
+      margin: 30px auto 0;
+      padding: 0 20px;
+    }
+
+    .btn-voltar {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--azul-senai);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .btn-voltar:hover {
+      color: var(--vermelho-senai);
+    }
+
     .checkout-container {
       max-width: 1000px;
-      margin: 60px auto;
+      margin: 20px auto 60px;
       padding: 0 20px;
       display: grid;
       grid-template-columns: 1fr 380px;
@@ -47,11 +70,21 @@
       padding: 32px;
       box-shadow: 0 10px 25px rgba(0, 20, 72, 0.05);
       border: 1px solid rgba(0, 20, 72, 0.08);
+      height: fit-content;
     }
 
     h2, h3 {
       margin-top: 0;
       color: var(--azul-senai);
+    }
+
+    /* Etapas do Formulário */
+    .step-section {
+      display: none;
+    }
+
+    .step-section.active {
+      display: block;
     }
 
     /* Abas de Método de Pagamento */
@@ -83,7 +116,6 @@
       background: rgba(0, 51, 153, 0.04);
     }
 
-    /* Áreas de conteúdo de pagamento */
     .payment-panel {
       display: none;
     }
@@ -136,6 +168,11 @@
     }
 
     .qrcode-placeholder {
+      font-size: 4rem;
+      margin-bottom: 10px;
+    }
+
+    .qrcode-img {
       width: 180px;
       height: 180px;
       margin: 0 auto 16px;
@@ -144,7 +181,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 5rem;
     }
 
     .pix-copia-e-cola {
@@ -185,7 +221,7 @@
 
     .btn-pay {
       width: 100%;
-      background: var(--vermelho-senai);
+      background: var(--azul-senai);
       color: white;
       border: none;
       padding: 16px;
@@ -193,13 +229,22 @@
       font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(227, 6, 19, 0.25);
+      box-shadow: 0 4px 12px rgba(0, 20, 72, 0.15);
       transition: all 0.2s;
     }
 
     .btn-pay:hover {
-      background: #b8050f;
+      background: var(--azul-brilhante);
       transform: translateY(-2px);
+    }
+
+    .btn-pay.vermelho {
+      background: var(--vermelho-senai);
+      box-shadow: 0 4px 12px rgba(227, 6, 19, 0.25);
+    }
+
+    .btn-pay.vermelho:hover {
+      background: #b8050f;
     }
 
     .timer {
@@ -212,63 +257,110 @@
 </head>
 <body>
 
+  <script src="js/skeleton.js"></script>
+
+  <div class="nav-top">
+    <a href="index.html" class="btn-voltar">
+      <i class="fa-solid fa-arrow-left"></i> Voltar para a Home
+    </a>
+  </div>
+
   <div class="checkout-container">
     
-    <!-- LADO ESQUERDO: MÉTODOS DE PAGAMENTO -->
     <main class="checkout-main">
-      <h2>Método de Pagamento</h2>
-      <p>Escolha como deseja assinar seu plano SnapBite.</p>
-
-      <div class="payment-methods">
-        <button class="method-btn active" onclick="switchTab('pix')">
-          <i class="fa-solid fa-pix"></i> Pix Instantâneo
-        </button>
-        <button class="method-btn" onclick="switchTab('card')">
-          <i class="fa-solid fa-credit-card"></i> Cartão de Crédito
-        </button>
-      </div>
-
-      <!-- PAINEL PIX -->
-      <div id="panel-pix" class="payment-panel active">
-        <div class="pix-wrapper">
-          <div class="qrcode-placeholder">📱</div>
-          <p style="margin:0; font-weight:600;">Escaneie o QR Code no seu app do banco</p>
-          <div class="timer"><i class="fa-regular fa-clock"></i> Expira em <span id="countdown">10:00</span></div>
-          
-          <div class="pix-copia-e-cola">
-            <input type="text" class="form-control" id="pixCode" value="00020126580014br.gov.bcb.pix0136snapbite-senai-suporte-fake-key2026" readonly>
-            <button class="method-btn" style="padding:12px; margin:0;" onclick="copyPix()"><i class="fa-regular fa-copy"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- PAINEL CARTÃO -->
-      <div id="panel-card" class="payment-panel">
-        <form id="cardForm" onsubmit="processPayment(event)">
+      
+      <section id="step-cadastro" class="step-section active">
+        <h2>Dados Cadastrais</h2>
+        <p>Preencha seus dados para vincular os benefícios do plano ao seu perfil do SENAI.</p>
+        
+        <form id="cadastroForm" onsubmit="prosseguirParaPagamento(event)">
           <div class="form-group">
-            <label for="cardName">Nome impresso no cartão</label>
-            <input type="text" id="cardName" class="form-control" placeholder="João da Silva" required>
+            <label for="regNome">Nome Completo</label>
+            <input type="text" id="regNome" class="form-control" placeholder="Seu nome completo" required>
           </div>
+
           <div class="form-group">
-            <label for="cardNumber">Número do cartão</label>
-            <input type="text" id="cardNumber" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" required>
+            <label for="regEmail">E-mail</label>
+            <input type="email" id="regEmail" class="form-control" placeholder="seuemail@provedor.com" required>
           </div>
+
           <div class="form-row">
             <div class="form-group">
-              <label for="cardExpiry">Validade</label>
-              <input type="text" id="cardExpiry" class="form-control" placeholder="MM/AA" maxlength="5" required>
+              <label for="regCpf">CPF</label>
+              <input type="text" id="regCpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required>
             </div>
             <div class="form-group">
-              <label for="cardCvc">CVC</label>
-              <input type="text" id="cardCvc" class="form-control" placeholder="123" maxlength="4" required>
+              <label for="regTel">Telefone</label>
+              <input type="tel" id="regTel" class="form-control" placeholder="(00) 90000-0000" maxlength="15" required>
             </div>
           </div>
-          <button type="submit" class="btn-pay" style="background-color: var(--azul-senai); box-shadow: none;">Finalizar Assinatura</button>
+
+          <div class="form-group">
+            <label for="regNasc">Data de Nascimento</label>
+            <input type="date" id="regNasc" class="form-control" required>
+          </div>
+
+          <button type="submit" class="btn-pay vermelho">Ir para o Pagamento</button>
         </form>
-      </div>
+      </section>
+
+
+      <section id="step-pagamento" class="step-section">
+        <h2>Forma de Pagamento</h2>
+        <p>Olá <span id="userNameTxt" style="font-weight: 700;"></span>! Escolha como quer finalizar a assinatura.</p>
+
+        <div class="payment-methods">
+          <button class="method-btn active" id="btn-tab-pix" onclick="switchTab('pix')">
+            <i class="fa-solid fa-pix"></i> Pix Instantâneo
+          </button>
+          <button class="method-btn" id="btn-tab-card" onclick="switchTab('card')">
+            <i class="fa-solid fa-credit-card"></i> Cartão de Crédito
+          </button>
+        </div>
+
+        <div id="panel-pix" class="payment-panel active">
+          <div class="pix-wrapper">
+            <div class="qrcode-img">
+              <img id="qrCodeImg" src="" alt="QR Code Pix" style="width:100%; height:100%;">
+            </div>
+            <p style="margin:0; font-weight:600; color: #16a34a;"><i class="fa-solid fa-circle-check"></i> QR Code Gerado com Sucesso!</p>
+            <div class="timer"><i class="fa-regular fa-clock"></i> Seu Pix expira em <span id="countdown">10:00</span></div>
+            
+            <div class="pix-copia-e-cola">
+              <input type="text" class="form-control" id="pixCode" value="" readonly>
+              <button class="method-btn" style="padding:12px; margin:0;" onclick="copyPix()"><i class="fa-regular fa-copy"></i></button>
+            </div>
+            <button class="btn-pay" style="margin-top: 20px; background-color: #16a34a;" onclick="confirmacaoFinal()">Já fiz o pagamento</button>
+          </div>
+        </div>
+
+        <div id="panel-card" class="payment-panel">
+          <form id="cardForm" onsubmit="processarCartao(event)">
+            <div class="form-group">
+              <label for="cardName">Nome impresso no cartão</label>
+              <input type="text" id="cardName" class="form-control" placeholder="JOAO H SILVA" required>
+            </div>
+            <div class="form-group">
+              <label for="cardNumber">Número do cartão</label>
+              <input type="text" id="cardNumber" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cardExpiry">Validade</label>
+                <input type="text" id="cardExpiry" class="form-control" placeholder="MM/AA" maxlength="5" required>
+              </div>
+              <div class="form-group">
+                <label for="cardCvc">CVC</label>
+                <input type="text" id="cardCvc" class="form-control" placeholder="123" maxlength="4" required>
+              </div>
+            </div>
+            <button type="submit" class="btn-pay">Finalizar Assinatura</button>
+          </form>
+        </div>
+      </section>
+
     </main>
 
-    <!-- LADO DIREITO: RESUMO -->
     <aside class="checkout-sidebar">
       <h3>Resumo da Assinatura</h3>
       
@@ -284,7 +376,7 @@
           <span id="subtotalVal">R$ 0,00</span>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span>Taxa de adesão</span>
+          <span>Taxa de inscrição</span>
           <span style="color:#22c55e; font-weight:600;">Grátis</span>
         </div>
       </div>
@@ -293,31 +385,22 @@
         <span>Total</span>
         <span id="totalVal" style="color: var(--azul-senai)">R$ 0,00</span>
       </div>
-      
-      <p style="font-size:0.75rem; color:#94a3b8; text-align:center; margin-top:24px;">
-        Ao confirmar, você concorda com os termos de renovação recorrente mensal do SnapBite.
-      </p>
     </aside>
 
   </div>
 
   <script>
-    // Banco de dados fake interno dos planos baseado na sua home
     const planosInfo = {
       start: { nome: 'Plano Start', desc: '5% OFF + Promoções Semanais', preco: 'R$ 9,90', val: 9.90 },
       pro: { nome: 'Plano Pro 🚀', desc: '15% OFF + Frete Interno Grátis + 2 Combos/mês', preco: 'R$ 19,90', val: 19.90 },
       elite: { nome: 'Plano Elite', desc: '25% OFF + Combo Exclusivo Semanal + Suporte VIP', preco: 'R$ 39,90', val: 39.90 }
     };
 
-    // Pega o plano vindo da URL (?plano=pro)
     const urlParams = new URLSearchParams(window.location.search);
     let planoSelecionado = urlParams.get('plano') || 'start'; 
     planoSelecionado = planoSelecionado.toLowerCase();
-
-    // Se o usuário digitar algo inválido na URL, joga pro start
     if(!planosInfo[planoSelecionado]) planoSelecionado = 'start';
 
-    // Monta a tela com as informações corretas do plano
     const plano = planosInfo[planoSelecionado];
     document.getElementById('planName').innerText = plano.nome;
     document.getElementById('planDesc').innerText = plano.desc;
@@ -325,52 +408,105 @@
     document.getElementById('subtotalVal').innerText = plano.preco;
     document.getElementById('totalVal').innerText = plano.preco;
 
-    // Se for o Plano Pro (Mais vendido), pinta de Vermelho para dar match com o destaque da home!
     if (planoSelecionado === 'pro') {
       document.getElementById('planBox').classList.add('pro-active');
       document.getElementById('totalVal').style.color = 'var(--vermelho-senai)';
     }
 
-    // Alternar entre abas (Pix / Cartão)
+    // ==========================================
+    // MÁSCARAS DE INPUT (CPF e Telefone)
+    // ==========================================
+    document.getElementById('regCpf').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+      value = value.replace(/(\d{3})(\d)/, '$1.$2');  // Adiciona o primeiro ponto
+      value = value.replace(/(\d{3})(\d)/, '$1.$2');  // Adiciona o segundo ponto
+      value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
+      e.target.value = value;
+    });
+
+    document.getElementById('regTel').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/^(\d{2})(\d)/g, '($1) $2'); // Adiciona parênteses do DDD
+      value = value.replace(/(\d{5})(\d)/, '$1-$2');    // Adiciona o hífen no número celular
+      e.target.value = value;
+    });
+
+
+    // DISPARA APÓS PREENCHER OS DADOS CADASTRAIS
+    function prosseguirParaPagamento(e) {
+      e.preventDefault();
+      
+      const nome = document.getElementById('regNome').value;
+      const email = document.getElementById('regEmail').value;
+
+      document.getElementById('userNameTxt').innerText = nome.split(' ')[0];
+
+      // GERAÇÃO DO QR CODE E CÓDIGO PIX BASEADO NOS DADOS DO CLIENTE
+      const chavePixFake = "snapbite.senai.checkout.2026";
+      const payloadPix = `00020101021226480014br.gov.bcb.pix0122${chavePixFake}5204000053039865404${plano.val.toFixed(2)}5802BR5916SNAPBITE%20SENAI6009NITER0I62070503***6304`;
+      
+      // API de QR Code estático injetando o payload gerado
+      document.getElementById('qrCodeImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(payloadPix)}`;
+      document.getElementById('pixCode').value = payloadPix;
+
+      // Transiciona a tela
+      document.getElementById('step-cadastro').classList.remove('active');
+      document.getElementById('step-pagamento').classList.add('active');
+      
+      // Inicia contador do Pix
+      startTimer();
+    }
+
+    // Alternar entre abas de pagamento
     function switchTab(type) {
-      document.querySelectorAll('.method-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.payment-panel').forEach(panel => panel.classList.remove('active'));
+      document.getElementById('btn-tab-pix').classList.remove('active');
+      document.getElementById('btn-tab-card').classList.remove('active');
+      document.getElementById('panel-pix').classList.remove('active');
+      document.getElementById('panel-card').classList.remove('active');
       
       if(type === 'pix') {
-        event.currentTarget.classList.add('active');
+        document.getElementById('btn-tab-pix').classList.add('active');
         document.getElementById('panel-pix').classList.add('active');
       } else {
-        event.currentTarget.classList.add('active');
+        document.getElementById('btn-tab-card').classList.add('active');
         document.getElementById('panel-card').classList.add('active');
       }
     }
 
-    // Copiar código pix
     function copyPix() {
       const pixInput = document.getElementById('pixCode');
       pixInput.select();
       document.execCommand('copy');
-      alert('Código Pix Copia e Cola copiado com sucesso! Transfira no app do seu banco.');
+      alert('Copia e Cola copiado! Cole no aplicativo do seu banco para pagar.');
     }
 
-    // Processamento do formulário de cartão
-    function processPayment(e) {
+    function processarCartao(e) {
       e.preventDefault();
-      alert('Processando pagamento via Firebase Auth/Gateway integrado... Assinatura do ' + plano.nome + ' ativada!');
-      window.location.href = 'index.html'; // Redireciona de volta para a home pós sucesso
+      alert(`Sucesso! Pagamento aprovado no cartão. Seu ${plano.nome} já está ativo no sistema do SnapBite.`);
+      window.location.href = 'index.html';
     }
 
-    // Contador regressivo do Pix (10 Minutos)
-    let time = 600;
-    const countdownEl = document.getElementById('countdown');
-    setInterval(() => {
-      if(time <= 0) return;
-      time--;
-      let minutes = Math.floor(time / 60);
-      let seconds = time % 60;
-      seconds = seconds < 10 ? '0' + seconds : seconds;
-      countdownEl.innerHTML = `${minutes}:${seconds}`;
-    }, 1000);
+    function confirmacaoFinal() {
+      alert(`Recebemos a notificação do Pix! Seu ${plano.nome} foi ativado com sucesso.`);
+      window.location.href = 'index.html';
+    }
+
+    // Controle de Timer
+    let timerRunning = false;
+    function startTimer() {
+      if(timerRunning) return;
+      timerRunning = true;
+      let time = 600;
+      const countdownEl = document.getElementById('countdown');
+      setInterval(() => {
+        if(time <= 0) return;
+        time--;
+        let minutes = Math.floor(time / 60);
+        let seconds = time % 60;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        countdownEl.innerHTML = `${minutes}:${seconds}`;
+      }, 1000);
+    }
   </script>
 
 </body>

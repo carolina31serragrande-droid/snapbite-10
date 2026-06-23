@@ -682,7 +682,6 @@ document.body.insertAdjacentHTML('afterbegin', `
             <li><a href="index.html">Home</a></li>
             <li><a href="cardapio.html">Cardápio</a></li>
             <li><a href="promocoes.html">Promoções</a></li>
-            <li><a href="fidelidade.html">Cartão Fidelidade</a></li>
             <li><a href="sobre.html">Sobre Nós</a></li>
             <li><a href="contato.html">Contato</a></li>
             <li><a href="carrinho.html">Carrinho</a></li>

@@ -119,9 +119,9 @@ function atualizarBadgeCarrinho() {
 // ────────────────────────────────────────
 function estaNoHorarioDeCompra() {
   const inicioManha = 7 * 60;
-const fimManha = 8 * 60 + 30;
-const inicioTarde = 11 * 60;
-const fimTarde = 12 * 60 + 30;
+  const fimManha = 8 * 60 + 30;
+  const inicioTarde = 11 * 60;
+  const fimTarde = 12 * 60 + 30;
 }
 
 function getMensagemHorarioCompra() {

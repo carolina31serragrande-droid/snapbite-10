@@ -834,7 +834,7 @@ document.body.insertAdjacentHTML('afterbegin', `
                 id="btn-esqueceu-senha"
                 style="background:none;border:none;color:var(--mostarda);cursor:pointer;font-weight:600;"
               >
-                Esqueci a senha
+                Esqueci a senha?
               </button>
             </p>
           </form>

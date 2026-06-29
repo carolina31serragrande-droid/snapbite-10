@@ -1220,7 +1220,7 @@ function initPerfilPage() {
   btnEnviarCodigo?.addEventListener('click', async () => {
     const emailAtual = App.usuario?.email;
     if (!emailAtual) {
-      showToast('Não encontrei o e-mail da sua conta.', 'error');
+      showToast('Não encontramos o e-mail da sua conta.', 'error');
       return;
     }
 

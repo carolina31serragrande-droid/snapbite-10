@@ -739,7 +739,7 @@
 
       // Geração do QR Code e código Pix baseado no plano escolhido
       const chavePixFake = "snapbite.checkout.2026";
-      const payloadPix = `00020101021226480014br.gov.bcb.pix0122${chavePixFake}5204000053039865404${plano.val.toFixed(2)}5802BR5916SNAPBITE6009NITEROI62070503***6304`;
+      const payloadPix = `00020126330014BR.GOV.BCB.PIX0111216366077055204000053039865802BR5921BERNARDO VIEIRA ALVES6009Sao Paulo62290525REC6A427911662591115725156304E8CF`;
 
       document.getElementById('qrCodeImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(payloadPix)}`;
       document.getElementById('pixCode').value = payloadPix;

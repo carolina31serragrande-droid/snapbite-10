@@ -737,7 +737,9 @@ function renderizarCarrinho() {
       .map(
         (item) => `
           <div class="c-item" data-id="${item.id}">
-            <div class="c-emoji">${item.emoji}</div>
+            ${item.img
+              ? `<div class="c-emoji c-foto"><img src="${item.img}" alt="${item.nome}"></div>`
+              : `<div class="c-emoji">${item.emoji || '🍽️'}</div>`}
             <div class="c-info">
               <div class="c-nome">${item.nome}</div>
               <div class="c-desc">${item.desc || ''}</div>

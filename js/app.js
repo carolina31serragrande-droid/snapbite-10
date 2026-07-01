@@ -657,34 +657,19 @@ function initAuthForms() {
 }
 
 // ────────────────────────────────────────
-// CARRINHO E CUPOM
+// CARRINHO
 // ────────────────────────────────────────
-
-// Variável global para rastrear se o cupom SNAP10 foi aplicado (0 = sem desconto, 0.10 = 10% de desconto)
-let descontoAtivo = 0;
-
-function aplicarCupom() {
-  const cupomInput = document.getElementById('cupom');
-  if (!cupomInput) return;
-
-  const codigo = cupomInput.value.trim().toUpperCase();
-
-  if (codigo === 'SNAP10') {
-    descontoAtivo = 0.10; // 10% de desconto
-    showToast('Cupom SNAP10 aplicado com sucesso! 🎉', 'success');
-    renderizarCarrinho(); // Recarrega a tela com os novos valores
-  } else {
-    descontoAtivo = 0;
-    showToast('Cupom não encontrado.', 'error');
-    renderizarCarrinho();
-  }
-}
-// Torna a função visível globalmente para o HTML encontrar no onclick
-window.aplicarCupom = aplicarCupom;
-
 function adicionarAoCarrinho(produto) {
   if (!estaNoHorarioDeCompra()) {
     showToast(getMensagemHorarioCompra(), 'warning', 4500);
+    return;
+  }
+
+  if (!App.usuario) {
+    localStorage.setItem('snapbite_pending_product', JSON.stringify(produto));
+    showToast('⚠️ Você precisa fazer login para comprar!', 'warning', 4000);
+    const paginaAtual = window.location.pathname.split('/').pop() || 'index.html';
+    window.location.href = 'login.html?redirect=' + encodeURIComponent(paginaAtual);
     return;
   }
 
@@ -728,12 +713,7 @@ function alterarQtd(id, delta) {
 function calcularTotais() {
   const subtotal = App.carrinho.reduce((acc, i) => acc + i.preco * i.qtd, 0);
   const taxa = 0;
-  
-  // Aplica a porcentagem de desconto baseada no cupom ativo
-  const valorDesconto = subtotal * descontoAtivo; 
-  const total = subtotal + taxa - valorDesconto;
-
-  return { subtotal, taxa, total: Math.max(0, total) };
+  return { subtotal, taxa, total: subtotal + taxa };
 }
 
 function renderizarCarrinho() {
@@ -741,10 +721,6 @@ function renderizarCarrinho() {
   const subtotalEl = document.getElementById('resumo-subtotal');
   const totalEl = document.getElementById('resumo-total');
   const qtdEl = document.getElementById('resumo-qtd');
-  
-  // Elementos do cupom
-  const linhaDescontoEl = document.getElementById('linha-desconto');
-  const resumoDescontoEl = document.getElementById('resumo-desconto');
 
   if (!lista) return;
 
@@ -788,17 +764,6 @@ function renderizarCarrinho() {
   if (subtotalEl) subtotalEl.textContent = formatBRL(subtotal);
   if (totalEl) totalEl.textContent = formatBRL(total);
   if (qtdEl) qtdEl.textContent = `${qtd} ${qtd === 1 ? 'item' : 'itens'}`;
-
-  // Lógica para mostrar/esconder a linha do cupom no resumo
-  if (linhaDescontoEl && resumoDescontoEl) {
-    if (typeof descontoAtivo !== 'undefined' && descontoAtivo > 0 && subtotal > 0) {
-      const valorDesconto = subtotal * descontoAtivo;
-      resumoDescontoEl.textContent = `- ${formatBRL(valorDesconto)}`;
-      linhaDescontoEl.style.display = 'flex'; // Mostra a linha do cupom
-    } else {
-      linhaDescontoEl.style.display = 'none';  // Esconde se não tiver cupom ou se o carrinho sumir
-    }
-  }
 
   atualizarEstadoDosBotoesCompra();
 }
@@ -1548,6 +1513,18 @@ document.addEventListener('DOMContentLoaded', () => {
   initContato();
   carregarCarrinhoUsuario();
   atualizarEstadoDosBotoesCompra();
+
+  if (App.usuario) {
+    const pendente = localStorage.getItem('snapbite_pending_product');
+    if (pendente) {
+      localStorage.removeItem('snapbite_pending_product');
+      try {
+        adicionarAoCarrinho(JSON.parse(pendente));
+      } catch (e) {
+        console.warn('Não foi possível adicionar o produto pendente.', e);
+      }
+    }
+  }
 
   setInterval(atualizarEstadoDosBotoesCompra, 30000);
 

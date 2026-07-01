@@ -16,6 +16,26 @@
        --vinho (azul), --creme, --off-white etc.
        ============================================ */
 
+    .pg-aviso-login {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #FFF4E5;
+      border: 1px solid #F5C177;
+      color: #8A5A00;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 12px 18px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      max-width: fit-content;
+    }
+
+    .pg-aviso-login i {
+      color: #C97800;
+      font-size: 1rem;
+    }
+
     .pg-planos-section {
       background: var(--off-white);
       padding: 56px 0 16px;
@@ -459,6 +479,10 @@
   <main>
     <div class="page-hero">
       <div class="page-hero-inner">
+        <div id="aviso-login-assinatura" class="pg-aviso-login" style="display:none;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>Você ainda não está logado. Faça login para concluir sua assinatura.</span>
+        </div>
         <span class="eyebrow">Assinaturas SnapBite</span>
         <h1>Pagamento de Planos</h1>
         <p>Escolha o plano ideal, preencha seus dados e finalize a assinatura em poucos passos.</p>
@@ -711,6 +735,14 @@
       if (!planosInfo[inicial]) inicial = 'start';
       selecionarPlano(inicial);
     })();
+
+    // Mostra aviso de "não logado" acima do título, apenas para quem não está logado
+    document.addEventListener('DOMContentLoaded', () => {
+      const aviso = document.getElementById('aviso-login-assinatura');
+      if (aviso && (!window.App || !App.usuario)) {
+        aviso.style.display = 'flex';
+      }
+    });
 
     // Restaura dados da assinatura pendente após o cliente fazer login
     document.addEventListener('DOMContentLoaded', () => {

@@ -712,6 +712,32 @@
       selecionarPlano(inicial);
     })();
 
+    // Restaura dados da assinatura pendente após o cliente fazer login
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!window.App || !App.usuario) return;
+
+      const pendenteStr = localStorage.getItem('snapbite_pending_assinatura');
+      if (!pendenteStr) return;
+
+      localStorage.removeItem('snapbite_pending_assinatura');
+
+      try {
+        const pendente = JSON.parse(pendenteStr);
+
+        if (pendente.plano) selecionarPlano(pendente.plano);
+
+        document.getElementById('regNome').value = pendente.nome || '';
+        document.getElementById('regEmail').value = pendente.email || '';
+        document.getElementById('regCpf').value = pendente.cpf || '';
+        document.getElementById('regTel').value = pendente.tel || '';
+        document.getElementById('regNasc').value = pendente.nasc || '';
+
+        prosseguirParaPagamento({ preventDefault() {} });
+      } catch (erro) {
+        console.warn('Não foi possível restaurar a assinatura pendente.', erro);
+      }
+    });
+
     // ==========================================
     // MÁSCARAS DE INPUT (CPF e Telefone)
     // ==========================================
@@ -733,6 +759,26 @@
     // DISPARA APÓS PREENCHER OS DADOS CADASTRAIS
     function prosseguirParaPagamento(e) {
       e.preventDefault();
+
+      if (!window.App || !App.usuario) {
+        const dadosPendentes = {
+          plano: planoSelecionado,
+          nome: document.getElementById('regNome').value,
+          email: document.getElementById('regEmail').value,
+          cpf: document.getElementById('regCpf').value,
+          tel: document.getElementById('regTel').value,
+          nasc: document.getElementById('regNasc').value
+        };
+        localStorage.setItem('snapbite_pending_assinatura', JSON.stringify(dadosPendentes));
+
+        if (window.showToast) {
+          showToast('⚠️ Você precisa fazer login para assinar!', 'warning', 4000);
+        }
+
+        const paginaVolta = 'pagamento.html' + (planoSelecionado ? '?plano=' + planoSelecionado : '');
+        window.location.href = 'login.html?redirect=' + encodeURIComponent(paginaVolta);
+        return;
+      }
 
       const nome = document.getElementById('regNome').value;
       document.getElementById('userNameTxt').innerText = nome.split(' ')[0];

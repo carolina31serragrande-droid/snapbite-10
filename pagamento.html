@@ -982,20 +982,21 @@
     }
 
     // Alternar entre abas de pagamento
-    function switchTab(type) {
-      document.getElementById('btn-tab-pix').classList.remove('active');
-      document.getElementById('btn-tab-card').classList.remove('active');
-      document.getElementById('panel-pix').classList.remove('active');
-      document.getElementById('panel-card').classList.remove('active');
+    function switchTab(tab){
 
-      if (type === 'pix') {
-        document.getElementById('btn-tab-pix').classList.add('active');
-        document.getElementById('panel-pix').classList.add('active');
-      } else {
-        document.getElementById('btn-tab-card').classList.add('active');
-        document.getElementById('panel-card').classList.add('active');
-      }
-    }
+document.querySelectorAll(".payment-panel")
+    .forEach(p=>p.classList.remove("active"));
+
+document.querySelectorAll(".method-btn")
+    .forEach(b=>b.classList.remove("active"));
+
+document.getElementById("panel-"+tab)
+    .classList.add("active");
+
+document.getElementById("btn-tab-"+tab)
+    .classList.add("active");
+
+}
 
     function copyPix() {
       const pixInput = document.getElementById('pixCode');
@@ -1025,6 +1026,14 @@
       e.preventDefault();
       mostrarSucesso('Cartão de Crédito');
     }
+
+    function processarDebito(e){
+
+e.preventDefault();
+
+confirmacaoFinal();
+
+}
 
     function confirmacaoFinal() {
       mostrarSucesso('Pix Automatico');

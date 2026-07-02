@@ -87,9 +87,9 @@ function sincronizarMenuAutenticado() {
 // ASSINATURA (PLANOS PAGOS)
 // ────────────────────────────────────────
 const PLANOS_INFO = {
-  start: { nome: 'Plano Start', desconto: 0.05, combosGratisMes: 0, freteGratisInterno: false },
-  pro: { nome: 'Plano Pro', desconto: 0.15, combosGratisMes: 2, freteGratisInterno: true },
-  elite: { nome: 'Plano Elite', desconto: 0.25, combosGratisMes: 4, freteGratisInterno: true },
+  start: { nome: 'Plano Start', desconto: 0.05, combosGratisMes: 0, freteGratisInterno: false, preco: 9.90 },
+  pro: { nome: 'Plano Pro', desconto: 0.15, combosGratisMes: 2, freteGratisInterno: true, preco: 19.90 },
+  elite: { nome: 'Plano Elite', desconto: 0.25, combosGratisMes: 4, freteGratisInterno: true, preco: 39.90 },
 };
 
 function getAssinaturasSalvas() {
@@ -129,7 +129,7 @@ function getAssinaturaUsuario(usuario = App.usuario) {
 }
 
 // Ativa/renova a assinatura do usuário logado (chamado após pagamento aprovado)
-function ativarAssinatura(chavePlano, usuario = App.usuario) {
+function ativarAssinatura(chavePlano, formaPagamento = 'Pix', usuario = App.usuario) {
   const id = getIdentificadorUsuario(usuario);
   if (!id || !PLANOS_INFO[chavePlano]) return null;
 
@@ -140,6 +140,7 @@ function ativarAssinatura(chavePlano, usuario = App.usuario) {
 
   todas[id] = {
     plano: chavePlano,
+    formaPagamento,
     ativadaEm: hoje.toISOString(),
     expiraEm: expiraEm.toISOString(),
     combosUsados: { mes: getMesAtual(), qtd: 0 },
@@ -147,6 +148,19 @@ function ativarAssinatura(chavePlano, usuario = App.usuario) {
 
   salvarAssinaturasSalvas(todas);
   return todas[id];
+}
+
+// Cancela a assinatura ativa do usuário logado
+function cancelarAssinatura(usuario = App.usuario) {
+  const id = getIdentificadorUsuario(usuario);
+  if (!id) return false;
+
+  const todas = getAssinaturasSalvas();
+  if (!todas[id]) return false;
+
+  delete todas[id];
+  salvarAssinaturasSalvas(todas);
+  return true;
 }
 
 // Retorna os benefícios do plano ativo, prontos para uso na UI e nos cálculos
@@ -158,12 +172,15 @@ function getBeneficiosPlano(usuario = App.usuario) {
   return {
     ...info,
     chave: assinatura.plano,
+    formaPagamento: assinatura.formaPagamento || 'Pix',
+    ativadaEm: assinatura.ativadaEm,
     expiraEm: assinatura.expiraEm,
     combosRestantes: Math.max(info.combosGratisMes - (assinatura.combosUsados?.qtd || 0), 0),
   };
 }
 window.getBeneficiosPlano = getBeneficiosPlano;
 window.ativarAssinatura = ativarAssinatura;
+window.cancelarAssinatura = cancelarAssinatura;
 
 // ────────────────────────────────────────
 // CUPONS (uso livre para quem não é assinante)
@@ -552,10 +569,18 @@ function atualizarNavAuth() {
       ? `<img src="${perfil.foto}" alt="Perfil" class="nav-profile-avatar-img">`
       : `<span class="nav-profile-avatar-initial">${inicial}</span>`;
 
+    const beneficios = getBeneficiosPlano(App.usuario);
+    const planoBadgeHtml = beneficios
+      ? `<a href="assinatura.html" class="nav-plano-badge" title="Gerenciar assinatura">${beneficios.nome.replace('Plano ', '')}</a>`
+      : '';
+
     areaLogin.innerHTML = `
-      <a href="perfil.html" class="nav-profile-avatar" title="Meu perfil" aria-label="Meu perfil">
-        ${fotoHtml}
-      </a>
+      <div class="nav-profile-wrap">
+        <a href="perfil.html" class="nav-profile-avatar" title="Meu perfil" aria-label="Meu perfil">
+          ${fotoHtml}
+        </a>
+        ${planoBadgeHtml}
+      </div>
 
       <span style="color:#aaa;font-size:0.85rem;font-weight:700;">
         Olá, <strong style="color:var(--mostarda)">${nomeCurto}</strong>

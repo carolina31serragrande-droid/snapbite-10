@@ -284,6 +284,47 @@
     .step-section { display: none; }
     .step-section.active { display: block; }
 
+    .step-sucesso { text-align: center; padding: 30px 10px; }
+
+    .sucesso-anim { width: 90px; height: 90px; margin: 0 auto 20px; }
+    .sucesso-check-svg { width: 100%; height: 100%; }
+    .sucesso-check-circle {
+      stroke: #16a34a;
+      stroke-width: 2;
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      animation: sucessoCircle 0.6s ease-out forwards;
+    }
+    .sucesso-check-mark {
+      stroke: #16a34a;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: sucessoCheck 0.4s 0.55s ease-out forwards;
+    }
+    @keyframes sucessoCircle { to { stroke-dashoffset: 0; } }
+    @keyframes sucessoCheck { to { stroke-dashoffset: 0; } }
+
+    .step-sucesso h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 6px; }
+    .step-sucesso > p { color: var(--cinza-q); margin-bottom: 24px; }
+
+    .sucesso-resumo-box {
+      background: var(--creme);
+      border: 1px solid var(--creme-esc);
+      border-radius: 14px;
+      padding: 18px 20px;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .sucesso-resumo-linha { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.9rem; border-bottom: 1px solid var(--creme-esc); }
+    .sucesso-resumo-linha:last-child { border-bottom: none; }
+    .sucesso-resumo-linha span { color: var(--cinza-q); }
+    .sucesso-resumo-linha strong { color: var(--preto-q); }
+
+    .sucesso-botoes { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
     /* Abas de método de pagamento */
     .payment-methods {
       display: grid;
@@ -651,6 +692,29 @@
             </div>
           </section>
 
+          <section id="step-sucesso" class="step-section step-sucesso">
+            <div class="sucesso-anim">
+              <svg class="sucesso-check-svg" viewBox="0 0 52 52">
+                <circle class="sucesso-check-circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="sucesso-check-mark" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+              </svg>
+            </div>
+            <h2>Assinatura confirmada!</h2>
+            <p>Seu plano já está ativo no SnapBite.</p>
+
+            <div class="sucesso-resumo-box">
+              <div class="sucesso-resumo-linha"><span>Plano</span><strong id="sucessoPlano">-</strong></div>
+              <div class="sucesso-resumo-linha"><span>Valor</span><strong id="sucessoValor">-</strong></div>
+              <div class="sucesso-resumo-linha"><span>Forma de pagamento</span><strong id="sucessoForma">-</strong></div>
+              <div class="sucesso-resumo-linha"><span>Ativada em</span><strong id="sucessoData">-</strong></div>
+            </div>
+
+            <div class="sucesso-botoes">
+              <a href="index.html" class="btn-ghost">Voltar para o site</a>
+              <a href="assinatura.html" class="btn-pay" style="text-decoration:none;text-align:center;">Gerenciar assinatura</a>
+            </div>
+          </section>
+
         </main>
 
         <aside class="checkout-sidebar">
@@ -866,21 +930,28 @@
       alert('Copia e Cola copiado! Cole no aplicativo do seu banco para pagar.');
     }
 
+    function mostrarSucesso(formaPagamentoLabel) {
+      if (window.ativarAssinatura && planoSelecionado) {
+        window.ativarAssinatura(planoSelecionado, formaPagamentoLabel);
+      }
+      if (window.atualizarNavAuth) window.atualizarNavAuth();
+
+      document.getElementById('sucessoPlano').textContent = plano.nome;
+      document.getElementById('sucessoValor').textContent = plano.preco + ' /mês';
+      document.getElementById('sucessoForma').textContent = formaPagamentoLabel;
+      document.getElementById('sucessoData').textContent = new Date().toLocaleDateString('pt-BR');
+
+      document.getElementById('step-pagamento').classList.remove('active');
+      document.getElementById('step-sucesso').classList.add('active');
+    }
+
     function processarCartao(e) {
       e.preventDefault();
-      if (window.ativarAssinatura && planoSelecionado) {
-        window.ativarAssinatura(planoSelecionado);
-      }
-      alert(`Sucesso! Pagamento aprovado no cartão. Seu ${plano.nome} já está ativo no sistema do SnapBite.`);
-      window.location.href = 'index.html';
+      mostrarSucesso('Cartão de Crédito');
     }
 
     function confirmacaoFinal() {
-      if (window.ativarAssinatura && planoSelecionado) {
-        window.ativarAssinatura(planoSelecionado);
-      }
-      alert(`Recebemos a notificação do Pix! Seu ${plano.nome} foi ativado com sucesso.`);
-      window.location.href = 'index.html';
+      mostrarSucesso('Pix');
     }
 
     // Controle de timer do Pix

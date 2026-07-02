@@ -71,6 +71,13 @@ document.body.insertAdjacentHTML('afterbegin', `
           <span class="menu-item-text">Promoções</span>
           <span class="menu-item-badge">HOT</span>
         </a>
+        <a href="assinatura.html" class="menu-item">
+          <span class="menu-item-icon">
+            <i class="fa-solid fa-crown"></i>
+          </span>
+          <span class="menu-item-text">Gerenciar assinatura</span>
+          <span class="menu-item-arrow">›</span>
+        </a>
       </div>
 
       <!-- Seção: Explorar -->
@@ -669,18 +676,10 @@ document.body.insertAdjacentHTML('afterbegin', `
           <span class="footer-logo">Snap<em>Bite</em></span>
           <p>A lanchonete do SENAI feita por alunos pra alunos. Rápido, gostoso e do jeito que a galera gosta.</p>
 
-          <div class="footer-socials" style="display:flex; gap:12px; margin-top:18px;">
-            <a href="https://www.instagram.com/santos.tech021/" target="_blank" class="soc ig" title="Instagram" style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:#5865F2;color:#fff;text-decoration:none;font-size:24px;">
-              <i class="fa-brands fa-instagram"></i>
-            </a>
-
-            <a href="https://x.com/?lang=pt" target="_blank" class="soc tw" title="X / Twitter" style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:#3B82F6;color:#fff;text-decoration:none;font-size:22px;">
-              <i class="fa-brands fa-x-twitter"></i>
-            </a>
-
-            <a href="https://wa.me/5521975535396" target="_blank" class="soc wa" title="WhatsApp" style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:#22C55E;color:#fff;text-decoration:none;font-size:24px;">
-              <i class="fa-brands fa-whatsapp"></i>
-            </a>
+          <div class="footer-socials">
+            <div class="soc ig" title="Instagram">📸</div>
+            <div class="soc tw" title="Twitter">🐦</div>
+            <div class="soc wa" title="WhatsApp">💬</div>
           </div>
         </div>
 
@@ -842,7 +841,7 @@ document.body.insertAdjacentHTML('afterbegin', `
                 id="btn-esqueceu-senha"
                 style="background:none;border:none;color:var(--mostarda);cursor:pointer;font-weight:600;"
               >
-                Esqueci a senha
+                Esqueci a senha?
               </button>
             </p>
           </form>

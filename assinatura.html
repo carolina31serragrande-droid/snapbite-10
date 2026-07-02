@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciar Assinatura — SnapBite</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/pages.css">
+
+  <style>
+    .assinatura-page { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+
+    .assinatura-card {
+      background: #fff;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+
+    .assinatura-plano-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      background: linear-gradient(135deg, var(--vinho), var(--vinho-cl));
+      color: #fff;
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-bottom: 24px;
+    }
+
+    .assinatura-plano-nome { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; }
+    .assinatura-plano-status { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
+    .assinatura-plano-preco { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 800; text-align: right; }
+    .assinatura-plano-preco span { display:block; font-size: 0.7rem; font-weight: 600; opacity: 0.85; }
+
+    .assinatura-linha {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--creme-esc);
+      font-size: 0.9rem;
+    }
+    .assinatura-linha:last-child { border-bottom: none; }
+    .assinatura-linha span:first-child { color: var(--cinza-q); }
+    .assinatura-linha strong { color: var(--preto-q); }
+
+    .assinatura-beneficios { list-style: none; padding: 0; margin: 0; }
+    .assinatura-beneficios li { display: flex; align-items: center; gap: 10px; padding: 9px 0; font-size: 0.9rem; color: var(--preto-q); }
+    .assinatura-beneficios i { color: var(--oliva-cl); }
+
+    .assinatura-botoes { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+
+    .btn-cancelar-assinatura {
+      background: #fff;
+      border: 1.5px solid var(--terracota);
+      color: var(--terracota);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background var(--t), color var(--t);
+    }
+    .btn-cancelar-assinatura:hover { background: var(--terracota); color: #fff; }
+
+    .assinatura-vazio { text-align: center; padding: 40px 20px; }
+    .assinatura-vazio .emoji { font-size: 3rem; margin-bottom: 12px; }
+
+    .combo-progress-track { background: var(--creme-esc); border-radius: 999px; height: 8px; overflow: hidden; margin-top: 6px; }
+    .combo-progress-fill { background: var(--mostarda); height: 100%; border-radius: 999px; transition: width 0.3s ease; }
+  </style>
+</head>
+<body>
+  <script src="js/skeleton.js"></script>
+
+  <main>
+    <section class="page-hero">
+      <div class="page-hero-inner">
+        <span class="eyebrow" style="color:var(--vinho)">Área do assinante</span>
+        <h1>Gerenciar assinatura</h1>
+        <p>Veja os detalhes do seu plano, forma de pagamento e benefícios ativos.</p>
+      </div>
+    </section>
+
+    <div class="assinatura-page" id="assinatura-conteudo">
+      <!-- Preenchido via JS -->
+    </div>
+  </main>
+
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="backend/firebase-auth.js"></script>
+
+  <script>
+    const NOMES_PAGAMENTO = { pix: 'Pix', cartao: 'Cartão de Crédito', 'cartão de crédito': 'Cartão de Crédito' };
+
+    function formatarData(iso) {
+      if (!iso) return '-';
+      return new Date(iso).toLocaleDateString('pt-BR');
+    }
+
+    function renderizarAssinatura() {
+      const container = document.getElementById('assinatura-conteudo');
+      if (!container) return;
+
+      if (!window.App || !App.usuario) {
+        container.innerHTML = `
+          <div class="assinatura-card assinatura-vazio">
+            <div class="emoji">🔒</div>
+            <h2>Faça login para ver sua assinatura</h2>
+            <p style="color:var(--cinza-q);margin:10px 0 20px;">Entre na sua conta SnapBite para gerenciar seu plano.</p>
+            <a href="login.html?redirect=assinatura.html" class="btn-primary">Fazer login</a>
+          </div>
+        `;
+        return;
+      }
+
+      const beneficios = window.getBeneficiosPlano ? getBeneficiosPlano() : null;
+
+      if (!beneficios) {
+        container.innerHTML = `
+          <div class="assinatura-card assinatura-vazio">
+            <div class="emoji">👑</div>
+            <h2>Você ainda não tem uma assinatura ativa</h2>
+            <p style="color:var(--cinza-q);margin:10px 0 20px;">Assine um dos nossos planos e desbloqueie descontos automáticos, combos grátis e muito mais.</p>
+            <a href="pagamento.html" class="btn-primary">Ver planos disponíveis</a>
+          </div>
+        `;
+        return;
+      }
+
+      const formaPagamento = NOMES_PAGAMENTO[String(beneficios.formaPagamento).toLowerCase()] || beneficios.formaPagamento;
+
+      const beneficiosLista = [
+        `${Math.round(beneficios.desconto * 100)}% OFF automático em todos os pedidos`,
+        beneficios.freteGratisInterno ? 'Frete interno grátis' : null,
+        beneficios.combosGratisMes > 0 ? `${beneficios.combosGratisMes} combo${beneficios.combosGratisMes > 1 ? 's' : ''} grátis por mês` : null,
+        'Atendimento prioritário',
+      ].filter(Boolean);
+
+      const comboHtml = beneficios.combosGratisMes > 0 ? `
+        <div class="assinatura-linha" style="flex-direction:column;align-items:stretch;gap:6px;">
+          <div style="display:flex;justify-content:space-between;">
+            <span>Combos grátis este mês</span>
+            <strong>${beneficios.combosGratisMes - beneficios.combosRestantes}/${beneficios.combosGratisMes} usados</strong>
+          </div>
+          <div class="combo-progress-track">
+            <div class="combo-progress-fill" style="width:${((beneficios.combosGratisMes - beneficios.combosRestantes) / beneficios.combosGratisMes) * 100}%"></div>
+          </div>
+        </div>
+      ` : '';
+
+      container.innerHTML = `
+        <div class="assinatura-card">
+          <div class="assinatura-plano-topo">
+            <div>
+              <div class="assinatura-plano-nome">${beneficios.nome}</div>
+              <div class="assinatura-plano-status">✅ Assinatura ativa</div>
+            </div>
+            <div class="assinatura-plano-preco">R$ ${beneficios.preco.toFixed(2).replace('.', ',')}<span>/mês</span></div>
+          </div>
+
+          <div class="assinatura-linha"><span>Forma de pagamento</span><strong>${formaPagamento}</strong></div>
+          <div class="assinatura-linha"><span>Ativada em</span><strong>${formatarData(beneficios.ativadaEm)}</strong></div>
+          <div class="assinatura-linha"><span>Próxima renovação</span><strong>${formatarData(beneficios.expiraEm)}</strong></div>
+          ${comboHtml}
+        </div>
+
+        <div class="assinatura-card">
+          <h3 style="font-family:'Playfair Display', serif; font-size:1.1rem; margin-bottom:6px;">Benefícios inclusos</h3>
+          <ul class="assinatura-beneficios">
+            ${beneficiosLista.map((b) => `<li><i class="fa-solid fa-circle-check"></i> ${b}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div class="assinatura-botoes">
+          <a href="pagamento.html" class="btn-ghost">Trocar de plano</a>
+          <button type="button" class="btn-cancelar-assinatura" onclick="confirmarCancelamento()">Cancelar assinatura</button>
+        </div>
+      `;
+    }
+
+    function confirmarCancelamento() {
+      const ok = confirm('Tem certeza que deseja cancelar sua assinatura? Você perderá os benefícios imediatamente.');
+      if (!ok) return;
+
+      if (window.cancelarAssinatura) {
+        cancelarAssinatura();
+      }
+
+      if (window.atualizarNavAuth) atualizarNavAuth();
+      if (window.showToast) showToast('Assinatura cancelada.', 'info');
+
+      renderizarAssinatura();
+    }
+
+    document.addEventListener('DOMContentLoaded', renderizarAssinatura);
+  </script>
+</body>
+</html>

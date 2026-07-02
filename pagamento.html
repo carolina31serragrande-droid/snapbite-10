@@ -328,10 +328,10 @@
     /* Abas de método de pagamento */
     .payment-methods {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 14px;
       margin: 24px 0;
-    }
+}
 
     .method-btn {
       padding: 14px;
@@ -1029,16 +1029,15 @@ document.getElementById("btn-tab-"+tab)
 
     function processarDebito(e){
 
-     e.preventDefault();
-      confirmacaoFinal();
-      mostrarSucesso('Cartão de Débito')
+e.preventDefault();
+
+mostrarSucesso('Cartão de Débito');
 
 }
 
-    function confirmacaoFinal() {
-      mostrarSucesso('Pix Automatico');
-    }
-
+function confirmacaoFinal() {
+    mostrarSucesso('Pix Instantâneo');
+}
     // Controle de timer do Pix
     let timerRunning = false;
     function startTimer() {

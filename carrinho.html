@@ -31,17 +31,15 @@
         </div>
         <div class="resumo">
           <h3>Resumo do pedido</h3>
+          <div id="banner-assinatura-carrinho" class="banner-assinatura" style="display:none;"></div>
           <div class="r-linha"><span>Subtotal</span><span id="resumo-subtotal">R$ 0,00</span></div>
           <div class="r-linha"><span>Taxa de serviço</span><span class="r-gratis">Grátis</span></div>
-          <div class="r-linha" id="linha-desconto" style="display: none; color: #2e7d32; font-weight: 600;">
-           <span>Cupom (SNAP10)</span>
-           <span id="resumo-desconto">- R$ 0,00</span>
-           </div>
+          <div class="r-linha" id="resumo-desconto-linha" style="display:none;color:var(--oliva-cl);font-weight:700;"><span>Desconto</span><span id="resumo-desconto"></span></div>
           <div class="r-linha r-total"><span>Total</span><span class="r-val" id="resumo-total">R$ 0,00</span></div>
-         <div class="cupom-row">
-          <input type="text" id="cupom" placeholder="CUPOM">
-          <button onclick="aplicarCupom()">Aplicar</button>
-         </div>
+          <div class="cupom-row">
+            <input type="text" id="cupom" placeholder="CUPOM">
+            <button onclick="aplicarCupom()">Aplicar</button>
+          </div>
           <button class="btn-finalizar" onclick="finalizarPedido()">✅ Finalizar pedido</button>
           <div class="info-senai-box">
             <span class="ic">🏫</span>

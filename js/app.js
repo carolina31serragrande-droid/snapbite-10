@@ -15,6 +15,7 @@ const App = {
   metodoPagamento: null,
   pixChaveAtual: null,
   codigoResgate: null,
+  cupomAplicado: null,
 };
 window.App = App;
 
@@ -81,6 +82,166 @@ function sincronizarMenuAutenticado() {
     linkPerfil.style.display = App.usuario ? '' : 'none';
   }
 }
+
+// ────────────────────────────────────────
+// ASSINATURA (PLANOS PAGOS)
+// ────────────────────────────────────────
+const PLANOS_INFO = {
+  start: { nome: 'Plano Start', desconto: 0.05, combosGratisMes: 0, freteGratisInterno: false },
+  pro: { nome: 'Plano Pro', desconto: 0.15, combosGratisMes: 2, freteGratisInterno: true },
+  elite: { nome: 'Plano Elite', desconto: 0.25, combosGratisMes: 4, freteGratisInterno: true },
+};
+
+function getAssinaturasSalvas() {
+  return JSON.parse(localStorage.getItem('snapbite_assinaturas') || '{}');
+}
+
+function salvarAssinaturasSalvas(dados) {
+  localStorage.setItem('snapbite_assinaturas', JSON.stringify(dados));
+}
+
+function getMesAtual() {
+  const hoje = new Date();
+  return `${hoje.getFullYear()}-${hoje.getMonth() + 1}`;
+}
+
+// Retorna a assinatura ativa do usuário (ou null se não tiver/estiver vencida)
+function getAssinaturaUsuario(usuario = App.usuario) {
+  const id = getIdentificadorUsuario(usuario);
+  if (!id) return null;
+
+  const todas = getAssinaturasSalvas();
+  const assinatura = todas[id];
+  if (!assinatura || !PLANOS_INFO[assinatura.plano]) return null;
+
+  if (assinatura.expiraEm && new Date(assinatura.expiraEm) < new Date()) {
+    return null;
+  }
+
+  // Zera o contador de combos grátis quando vira o mês
+  if (assinatura.combosUsados?.mes !== getMesAtual()) {
+    assinatura.combosUsados = { mes: getMesAtual(), qtd: 0 };
+    todas[id] = assinatura;
+    salvarAssinaturasSalvas(todas);
+  }
+
+  return assinatura;
+}
+
+// Ativa/renova a assinatura do usuário logado (chamado após pagamento aprovado)
+function ativarAssinatura(chavePlano, usuario = App.usuario) {
+  const id = getIdentificadorUsuario(usuario);
+  if (!id || !PLANOS_INFO[chavePlano]) return null;
+
+  const todas = getAssinaturasSalvas();
+  const hoje = new Date();
+  const expiraEm = new Date(hoje);
+  expiraEm.setDate(expiraEm.getDate() + 30);
+
+  todas[id] = {
+    plano: chavePlano,
+    ativadaEm: hoje.toISOString(),
+    expiraEm: expiraEm.toISOString(),
+    combosUsados: { mes: getMesAtual(), qtd: 0 },
+  };
+
+  salvarAssinaturasSalvas(todas);
+  return todas[id];
+}
+
+// Retorna os benefícios do plano ativo, prontos para uso na UI e nos cálculos
+function getBeneficiosPlano(usuario = App.usuario) {
+  const assinatura = getAssinaturaUsuario(usuario);
+  if (!assinatura) return null;
+
+  const info = PLANOS_INFO[assinatura.plano];
+  return {
+    ...info,
+    chave: assinatura.plano,
+    expiraEm: assinatura.expiraEm,
+    combosRestantes: Math.max(info.combosGratisMes - (assinatura.combosUsados?.qtd || 0), 0),
+  };
+}
+window.getBeneficiosPlano = getBeneficiosPlano;
+window.ativarAssinatura = ativarAssinatura;
+
+// ────────────────────────────────────────
+// CUPONS (uso livre para quem não é assinante)
+// ────────────────────────────────────────
+const CUPONS_VALIDOS = {
+  SNAP10: { percent: 0.10, desc: '10% OFF em todo o pedido' },
+  BEMVINDO5: { percent: 0.05, desc: '5% OFF de boas-vindas' },
+};
+
+function aplicarCupom() {
+  const input = document.getElementById('cupom');
+  if (!input) return;
+
+  const codigo = input.value.trim().toUpperCase();
+  if (!codigo) {
+    showToast('Digite um cupom para aplicar.', 'warning');
+    return;
+  }
+
+  const cupom = CUPONS_VALIDOS[codigo];
+  if (!cupom) {
+    showToast('Cupom não encontrado.', 'error');
+    App.cupomAplicado = null;
+    renderizarCarrinho();
+    return;
+  }
+
+  const beneficios = getBeneficiosPlano();
+  if (beneficios && beneficios.desconto >= cupom.percent) {
+    showToast(`Sua assinatura ${beneficios.nome} já garante um desconto maior! 🎉`, 'info');
+    App.cupomAplicado = null;
+    renderizarCarrinho();
+    return;
+  }
+
+  App.cupomAplicado = { codigo, ...cupom };
+  showToast(`Cupom ${codigo} aplicado! ${cupom.desc} 🎟️`, 'success');
+  renderizarCarrinho();
+}
+window.aplicarCupom = aplicarCupom;
+
+// Resgata um combo grátis do mês (benefício dos planos Pro/Elite)
+function resgatarComboGratis() {
+  if (!App.usuario) {
+    showToast('Faça login para resgatar seu combo grátis.', 'warning');
+    return;
+  }
+
+  const assinatura = getAssinaturaUsuario();
+  const beneficios = getBeneficiosPlano();
+
+  if (!assinatura || !beneficios || beneficios.combosGratisMes === 0) {
+    showToast('Esse benefício é exclusivo para assinantes Pro ou Elite.', 'warning');
+    return;
+  }
+
+  if (beneficios.combosRestantes <= 0) {
+    showToast('Você já usou todos os combos grátis deste mês.', 'warning');
+    return;
+  }
+
+  const todas = getAssinaturasSalvas();
+  const id = getIdentificadorUsuario();
+  todas[id].combosUsados.qtd = (todas[id].combosUsados.qtd || 0) + 1;
+  salvarAssinaturasSalvas(todas);
+
+  adicionarAoCarrinho({
+    id: 'combo-gratis-' + Date.now(),
+    nome: `Combo Grátis (${beneficios.nome})`,
+    desc: 'Benefício da sua assinatura SnapBite',
+    preco: 0,
+    emoji: '🎁',
+  });
+
+  showToast('Combo grátis adicionado ao carrinho! 🎁', 'success');
+  renderizarCarrinho();
+}
+window.resgatarComboGratis = resgatarComboGratis;
 
 // ────────────────────────────────────────
 // UTILIDADES
@@ -713,7 +874,25 @@ function alterarQtd(id, delta) {
 function calcularTotais() {
   const subtotal = App.carrinho.reduce((acc, i) => acc + i.preco * i.qtd, 0);
   const taxa = 0;
-  return { subtotal, taxa, total: subtotal + taxa };
+
+  const beneficios = getBeneficiosPlano();
+  let descontoPercent = 0;
+  let descontoOrigem = null;
+
+  if (App.cupomAplicado?.percent) {
+    descontoPercent = App.cupomAplicado.percent;
+    descontoOrigem = App.cupomAplicado.codigo;
+  }
+
+  if (beneficios && beneficios.desconto > descontoPercent) {
+    descontoPercent = beneficios.desconto;
+    descontoOrigem = beneficios.nome;
+  }
+
+  const desconto = subtotal * descontoPercent;
+  const total = Math.max(subtotal + taxa - desconto, 0);
+
+  return { subtotal, taxa, desconto, descontoPercent, descontoOrigem, total };
 }
 
 function renderizarCarrinho() {
@@ -758,15 +937,58 @@ function renderizarCarrinho() {
       .join('');
   }
 
-  const { subtotal, total } = calcularTotais();
+  const { subtotal, total, desconto, descontoOrigem } = calcularTotais();
   const qtd = App.carrinho.reduce((acc, i) => acc + i.qtd, 0);
 
   if (subtotalEl) subtotalEl.textContent = formatBRL(subtotal);
   if (totalEl) totalEl.textContent = formatBRL(total);
   if (qtdEl) qtdEl.textContent = `${qtd} ${qtd === 1 ? 'item' : 'itens'}`;
 
+  const descontoLinha = document.getElementById('resumo-desconto-linha');
+  const descontoVal = document.getElementById('resumo-desconto');
+  if (descontoLinha && descontoVal) {
+    if (desconto > 0) {
+      descontoLinha.style.display = 'flex';
+      descontoVal.textContent = `− ${formatBRL(desconto)} (${descontoOrigem})`;
+    } else {
+      descontoLinha.style.display = 'none';
+    }
+  }
+
+  renderizarBannerAssinatura();
   atualizarEstadoDosBotoesCompra();
 }
+
+// Mostra o status de assinante e o resgate de combo grátis no carrinho
+function renderizarBannerAssinatura() {
+  const banner = document.getElementById('banner-assinatura-carrinho');
+  if (!banner) return;
+
+  const beneficios = getBeneficiosPlano();
+
+  if (!beneficios) {
+    banner.style.display = 'none';
+    banner.innerHTML = '';
+    return;
+  }
+
+  banner.style.display = 'flex';
+
+  const comboHtml = beneficios.combosGratisMes > 0
+    ? `<button type="button" class="btn-combo-gratis" onclick="resgatarComboGratis()" ${beneficios.combosRestantes <= 0 ? 'disabled' : ''}>
+         ${beneficios.combosRestantes > 0 ? `🎁 Resgatar combo grátis (${beneficios.combosRestantes} restante${beneficios.combosRestantes > 1 ? 's' : ''})` : '🎁 Combos grátis usados este mês'}
+       </button>`
+    : '';
+
+  banner.innerHTML = `
+    <div class="banner-assinatura-info">
+      <span class="banner-assinatura-tag">✅ ${beneficios.nome} ativo</span>
+      <span>${Math.round(beneficios.desconto * 100)}% OFF aplicado automaticamente em todos os pedidos${beneficios.freteGratisInterno ? ' · Frete interno grátis' : ''}</span>
+    </div>
+    ${comboHtml}
+  `;
+}
+window.renderizarBannerAssinatura = renderizarBannerAssinatura;
 
 // ────────────────────────────────────────
 // E-MAIL DO PEDIDO

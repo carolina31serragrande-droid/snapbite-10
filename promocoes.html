@@ -48,6 +48,8 @@
         </div>
       </div>
 
+      <div id="promo-assinantes" style="display:none;margin-bottom:32px;"></div>
+
       <h2 class="promos-lista" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:24px">Mais ofertas</h2>
       <div class="promos-grid">
         <div class="prod-card">
@@ -167,6 +169,51 @@
 <script src="js/components.js"></script>
 <script src="js/app.js"></script>
 <script type="module" src="backend/firebase-auth.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('promo-assinantes');
+    if (!container || !window.getBeneficiosPlano) return;
 
+    const beneficios = getBeneficiosPlano();
+    if (!beneficios) return; // só aparece pra quem tem assinatura ativa
+
+    const ofertasPorPlano = {
+      start: [
+        { emoji: '🥤', nome: 'Combo Start Exclusivo', desc: 'Lanche + Suco com seu desconto de 5% já aplicado.', id: 'excl-start-1', preco: 14.90 },
+      ],
+      pro: [
+        { emoji: '🍔', nome: 'Combo Pro Antecipado', desc: 'Acesso antecipado: só assinantes Pro veem essa oferta hoje.', id: 'excl-pro-1', preco: 16.90 },
+        { emoji: '🍟', nome: 'Combo Duplo Pro', desc: 'Lanche + Batata + Refri, com 15% OFF automático.', id: 'excl-pro-2', preco: 21.90 },
+      ],
+      elite: [
+        { emoji: '👑', nome: 'Combo Elite da Semana', desc: 'Combo exclusivo, disponível só para assinantes Elite.', id: 'excl-elite-1', preco: 24.90 },
+        { emoji: '🎁', nome: 'Brinde Elite Surpresa', desc: 'Brinde especial + cupom extra para o seu próximo pedido.', id: 'excl-elite-2', preco: 9.90 },
+      ],
+    };
+
+    const ofertas = ofertasPorPlano[beneficios.chave] || [];
+
+    const cardsHtml = ofertas.map((o) => `
+      <div class="prod-card">
+        <div class="prod-body" style="padding-top:20px;">
+          <span class="badge-desconto" style="position:static;display:inline-block;margin-bottom:10px;">EXCLUSIVO ${beneficios.nome.toUpperCase()}</span>
+          <h3 class="prod-nome">${o.emoji} ${o.nome}</h3>
+          <p class="prod-desc">${o.desc}</p>
+          <div class="prod-foot">
+            <span class="prod-preco">R$ ${o.preco.toFixed(2).replace('.', ',')}</span>
+            <button class="btn-add" onclick="adicionarAoCarrinho({id:'${o.id}',nome:'${o.nome}',preco:${o.preco},emoji:'${o.emoji}',desc:'${o.desc}'})">+</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    container.innerHTML = `
+      <h2 class="promos-lista" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:6px;">✅ Exclusivo para você, assinante ${beneficios.nome}</h2>
+      <p style="color:var(--cinza-q,#666);margin-bottom:20px;">Essas ofertas só aparecem para quem tem assinatura ativa. Seu ${Math.round(beneficios.desconto * 100)}% OFF é aplicado automaticamente no carrinho.</p>
+      <div class="promos-grid">${cardsHtml}</div>
+    `;
+    container.style.display = 'block';
+  });
+</script>
 </body>
 </html>

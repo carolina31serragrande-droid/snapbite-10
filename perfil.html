@@ -31,6 +31,8 @@
 
           <h2>Seu perfil</h2>
           <p>Adicione uma foto, escreva uma descrição opcional e conte como foi sua experiência com a lanchonete.</p>
+
+          <div id="perfil-badge-assinatura" style="display:none;"></div>
         </div>
 
         <div class="perfil-card">
@@ -94,5 +96,25 @@
   <script src="js/components.js"></script>
   <script src="js/app.js"></script>
   <script type="module" src="js/firebase-auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const badge = document.getElementById('perfil-badge-assinatura');
+      if (!badge || !window.getBeneficiosPlano) return;
+
+      const beneficios = getBeneficiosPlano();
+      if (!beneficios) return;
+
+      const validade = new Date(beneficios.expiraEm).toLocaleDateString('pt-BR');
+
+      badge.style.display = 'block';
+      badge.innerHTML = `
+        <div style="margin-top:16px;background:linear-gradient(135deg,var(--vinho),var(--vinho-cl));color:#fff;border-radius:12px;padding:14px 16px;text-align:left;">
+          <div style="font-weight:800;font-size:0.95rem;">✅ ${beneficios.nome} ativo</div>
+          <div style="font-size:0.82rem;opacity:0.9;margin-top:4px;">${Math.round(beneficios.desconto * 100)}% OFF em pedidos${beneficios.freteGratisInterno ? ' · Frete interno grátis' : ''}${beneficios.combosGratisMes > 0 ? ` · ${beneficios.combosRestantes}/${beneficios.combosGratisMes} combos grátis este mês` : ''}</div>
+          <div style="font-size:0.75rem;opacity:0.75;margin-top:6px;">Válido até ${validade}</div>
+        </div>
+      `;
+    });
+  </script>
 </body>
 </html>

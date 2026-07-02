@@ -37,15 +37,13 @@
     }
 
     .pg-aviso-login-link {
-      color: #c90d00;
+      color: #C97800;
       text-decoration: underline;
       font-weight: 800;
-      transition: 0.2s;
     }
 
     .pg-aviso-login-link:hover {
-      transition: 0.3s;
-      color: #00098a;
+      color: #8A5A00;
     }
 
     .pg-planos-section {
@@ -870,11 +868,17 @@
 
     function processarCartao(e) {
       e.preventDefault();
+      if (window.ativarAssinatura && planoSelecionado) {
+        window.ativarAssinatura(planoSelecionado);
+      }
       alert(`Sucesso! Pagamento aprovado no cartão. Seu ${plano.nome} já está ativo no sistema do SnapBite.`);
       window.location.href = 'index.html';
     }
 
     function confirmacaoFinal() {
+      if (window.ativarAssinatura && planoSelecionado) {
+        window.ativarAssinatura(planoSelecionado);
+      }
       alert(`Recebemos a notificação do Pix! Seu ${plano.nome} foi ativado com sucesso.`);
       window.location.href = 'index.html';
     }

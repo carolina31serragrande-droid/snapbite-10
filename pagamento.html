@@ -927,7 +927,9 @@
       const pixInput = document.getElementById('pixCode');
       pixInput.select();
       document.execCommand('copy');
-      alert('Copia e Cola copiado! Cole no aplicativo do seu banco para pagar.');
+      if (window.showToast) {
+        showToast('Copia e Cola copiado! Cole no app do seu banco para pagar.', 'success');
+      }
     }
 
     function mostrarSucesso(formaPagamentoLabel) {

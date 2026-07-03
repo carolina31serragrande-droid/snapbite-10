@@ -63,19 +63,6 @@
               <input type="password" id="perfil-nova-senha" placeholder="Preencha só se quiser trocar a senha">
             </div>
 
-            <div class="form-group seguranca-email-box" style="background:#f7f9ff;border:1px solid #c0c8e0;border-radius:14px;padding:16px;">
-              <label>Confirmação por código no e-mail</label>
-              <p style="margin:6px 0 12px;color:#5C6680;font-size:.95rem;">
-                Para alterar nome, e-mail, senha ou foto, solicite um código. Ele será enviado para o e-mail atual da conta.
-              </p>
-              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-                <button type="button" id="btn-enviar-codigo-perfil" class="btn-secondary">Enviar código</button>
-                <input type="text" id="perfil-codigo-email" inputmode="numeric" maxlength="6" placeholder="Código de 6 números" style="max-width:190px;">
-                <button type="button" id="btn-verificar-codigo-perfil" class="btn-secondary">Verificar</button>
-              </div>
-              <small id="perfil-codigo-status" style="display:block;margin-top:10px;color:#5C6680;">Código ainda não verificado.</small>
-            </div>
-
             <div class="form-group">
               <label for="perfil-descricao">Descrição</label>
               <textarea id="perfil-descricao" rows="4" placeholder="Fala um pouco sobre você. Esse campo é opcional."></textarea>
@@ -87,6 +74,22 @@
             </div>
 
             <button type="submit" class="btn-primary">Salvar perfil</button>
+
+            <div class="form-group seguranca-email-box" id="seguranca-email-box" style="background:#f7f9ff;border:1px solid #c0c8e0;border-radius:14px;padding:16px;">
+              <label>Confirmação por código no e-mail</label>
+              <p id="seguranca-email-desc" style="margin:6px 0 12px;color:#5C6680;font-size:.95rem;">
+                Para alterar nome, e-mail, senha ou foto, clique em "Salvar perfil". Vamos enviar um código de confirmação para o e-mail atual da conta.
+              </p>
+              <div id="seguranca-email-campos" style="display:none;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+                <input type="text" id="perfil-codigo-email" inputmode="numeric" maxlength="6" placeholder="Código de 6 números" style="max-width:190px;">
+              </div>
+              <div id="seguranca-email-botoes" style="display:none;gap:10px;flex-wrap:wrap;">
+                <button type="button" id="btn-reenviar-codigo-perfil" class="btn-retangular btn-retangular-outline">Reenviar código</button>
+                <button type="button" id="btn-verificar-codigo-perfil" class="btn-retangular">Verificar e salvar</button>
+              </div>
+              <small id="perfil-codigo-status" style="display:block;margin-top:10px;color:#5C6680;">Código ainda não solicitado.</small>
+            </div>
+            
           </form>
         </div>
       </div>

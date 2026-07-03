@@ -300,6 +300,8 @@ async function loginComEmailSenha(email, senha, lembrar = false) {
     return { ok: true };
   } catch (err) {
 
+    console.error('[SnapBite DEBUG] Código do erro de login:', err.code, '| Mensagem:', err.message); // TEMPORÁRIO
+
     if (err.code === 'auth/too-many-requests') {
       bloquearLogin(email);
     }

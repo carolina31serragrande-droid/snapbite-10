@@ -101,6 +101,24 @@ function abrirModalCompletarCadastro() {
   window.openModal?.('modal-completar-cadastro');
 }
 
+// ─────────────────────────────────────────────────────
+// Bloqueio temporário de login por e-mail (após várias tentativas erradas)
+// ─────────────────────────────────────────────────────
+function bloquearLogin(email) {
+  const bloqueadoAte = Date.now() + TEMPO_BLOQUEIO;
+  localStorage.setItem(`bloqueio_${email}`, bloqueadoAte);
+}
+
+function loginBloqueado(email) {
+  const bloqueio = localStorage.getItem(`bloqueio_${email}`);
+  if (!bloqueio) return false;
+  if (Date.now() > Number(bloqueio)) {
+    localStorage.removeItem(`bloqueio_${email}`);
+    return false;
+  }
+  return true;
+}
+
 async function loginComGoogleReal() {
   try {
     const result  = await signInWithPopup(auth, provider);
@@ -177,28 +195,6 @@ function initCadastroExtra() {
     if (!currentUser.providerData?.some(p => p.providerId === 'password')) {
       if (senha.length < 6) { window.showToast?.('Senha com mínimo 6 caracteres.', 'warning'); return; }
       if (senha !== senhaConf) { window.showToast?.('As senhas não coincidem.', 'warning'); return; }
-    }
-
-    function bloquearLogin(email) {
-      const bloqueadoAte = Date.now() + TEMPO_BLOQUEIO;
-    
-      localStorage.setItem(
-        `bloqueio_${email}`,
-        bloqueadoAte
-      );
-    }
-    
-    function loginBloqueado(email) {
-      const bloqueio = localStorage.getItem(`bloqueio_${email}`);
-    
-      if (!bloqueio) return false;
-    
-      if (Date.now() > Number(bloqueio)) {
-        localStorage.removeItem(`bloqueio_${email}`);
-        return false;
-      }
-    
-      return true;
     }
 
     if (!aceitouTermos) { window.showToast?.('Aceite os termos para continuar.', 'warning'); return; }
@@ -303,8 +299,6 @@ async function loginComEmailSenha(email, senha, lembrar = false) {
     _redirecionarAposLogin();
     return { ok: true };
   } catch (err) {
-
-    console.error('[SnapBite DEBUG] Código do erro de login:', err.code, err.message); // TEMPORÁRIO - remover depois
 
     if (err.code === 'auth/too-many-requests') {
       bloquearLogin(email);

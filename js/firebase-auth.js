@@ -160,6 +160,61 @@ async function loginComGoogleReal() {
   }
 }
 
+async function loginComMicrosoftReal() {
+  try {
+    const result = await signInWithPopup(auth, microsoftProvider);
+
+    const usuario = syncUsuarioFirebase(result.user);
+
+    if (!usuario.cadastroCompleto) {
+      const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      };
+
+      set('extra-nome', usuario.nome || '');
+      set('extra-email', usuario.email || '');
+      set('extra-telefone', usuario.telefone || '');
+
+      const termos = document.getElementById('extra-termos');
+      if (termos) termos.checked = !!usuario.aceitouTermos;
+
+      abrirModalCompletarCadastro();
+      return { ok: false, precisaCompletar: true };
+    }
+
+    window.closeModal?.('modal-login');
+
+    window.showToast?.(
+      `Bem-vindo(a), ${usuario.nome.split(' ')[0]}! 🎉`,
+      'success'
+    );
+
+    _redirecionarAposLogin();
+
+    return { ok: true };
+
+  } catch (error) {
+
+    const msgs = {
+      'auth/popup-closed-by-user': 'Login cancelado.',
+      'auth/popup-blocked': 'O navegador bloqueou a janela.',
+      'auth/account-exists-with-different-credential':
+        'Esse e-mail já existe em outro método de login.'
+    };
+
+    window.showToast?.(
+      msgs[error.code] || 'Erro ao entrar com Microsoft.',
+      'error'
+    );
+
+    return {
+      ok: false,
+      msg: msgs[error.code] || 'Erro ao entrar.'
+    };
+  }
+}
+
 function _redirecionarAposLogin() {
   const params = new URLSearchParams(window.location.search);
   const redirect = params.get('redirect');
@@ -504,6 +559,7 @@ async function atualizarContaFirebasePerfil({ nome, email, senha }) {
 }
 
 window.loginComGoogleReal           = loginComGoogleReal;
+window.loginComMicrosoftReal = loginComMicrosoftReal;
 window.logoutFirebaseReal           = logoutFirebaseReal;
 window.loginComEmailSenha           = loginComEmailSenha;
 window.cadastrarComEmailSenha       = cadastrarComEmailSenha;

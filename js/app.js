@@ -799,9 +799,9 @@ function initAuthForms() {
     window.loginComGoogleReal?.();
   });
   
-  document.getElementById('btn-facebook')?.addEventListener('click', () => {
-    window.loginComFacebookReal?.();
-  });
+  document.getElementById('btn-microsoft')?.addEventListener('click', () => {
+    window.loginComMicrosoftReal?.();
+});
 
   document.querySelectorAll('.modal-close').forEach((btn) => {
     btn.addEventListener('click', () => {

@@ -73,28 +73,33 @@
 .cupom-row button:hover { background: var(--mostarda); color: var(--preto-mid); }
 
 .banner-assinatura {
+  display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 10px;
-  background: linear-gradient(135deg, var(--vinho), var(--vinho-cl));
-  color: #fff;
+  background: var(--creme);
+  border: 1.5px solid var(--cinza-borda);
+  border-left: 4px solid var(--vinho);
   border-radius: var(--radius-sm);
   padding: 14px 16px;
   margin-bottom: 20px;
   font-size: 0.85rem;
+  color: var(--preto-q);
 }
 .banner-assinatura-info { display: flex; flex-direction: column; gap: 4px; }
-.banner-assinatura-tag { font-weight: 800; font-size: 0.88rem; }
+.banner-assinatura-tag { font-weight: 800; font-size: 0.88rem; color: var(--vinho); }
 .btn-combo-gratis {
-  background: #fff;
-  color: var(--vinho);
+  background: var(--vinho);
+  color: #fff;
+  border: none;
   border-radius: var(--radius-sm);
-  padding: 9px 12px;
+  padding: 9px 14px;
   font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity var(--t);
+  transition: background var(--t);
 }
-.btn-combo-gratis:hover:not(:disabled) { opacity: 0.85; }
+.btn-combo-gratis:hover:not(:disabled) { background: var(--vinho-cl); }
 .btn-combo-gratis:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .btn-finalizar {

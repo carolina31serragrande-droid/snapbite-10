@@ -494,6 +494,7 @@
 
         <div class="planos-grid">
           <div class="plano-card" data-plano="start">
+            <div class="plano-tag plano-tag-atual" style="display:none;">Seu plano atual</div>
             <div class="plano-nome">Plano Start</div>
             <p>Perfeito para quem faz pedidos ocasionais.</p>
             <div class="plano-preco">R$ 9,90 <span>/mês</span></div>
@@ -503,13 +504,16 @@
               <li><i class="fa-solid fa-check"></i> Cashback em combos</li>
               <li><i class="fa-solid fa-check"></i> Atendimento prioritário</li>
             </ul>
-            <a href="pagamento.html" class="plano-btn">
-               Assinar agora               
-            </a>
+            <div class="plano-cta">
+              <a href="pagamento.html" class="plano-btn">
+                 Virar Start              
+              </a>
+            </div>
           </div>
 
-          <div class="plano-card plano-destaque">
+          <div class="plano-card plano-destaque" data-plano="pro">
             <div class="plano-tag">Mais vendido</div>
+            <div class="plano-tag plano-tag-atual" style="display:none;">Seu plano atual</div>
             <div class="plano-nome">Plano Pro</div>
             <p>Ideal para alunos que usam o SnapBite todos os dias.</p>
             <div class="plano-preco">R$ 19,90 <span>/mês</span></div>
@@ -519,12 +523,15 @@
               <li><i class="fa-solid fa-check"></i> 2 combos grátis por mês</li>
               <li><i class="fa-solid fa-check"></i> Acesso antecipado às promoções</li>
             </ul>
-            <a href="pagamento.html?plano=pro" class="plano-btn">
-               Quero o Pro
-            </a>
+            <div class="plano-cta">
+              <a href="pagamento.html?plano=pro" class="plano-btn">
+                 Quero o Pro
+              </a>
+            </div>
           </div>
 
-          <div class="plano-card">
+          <div class="plano-card" data-plano="elite">
+            <div class="plano-tag plano-tag-atual" style="display:none;">Seu plano atual</div>
             <div class="plano-nome">Plano Elite</div>
             <p>Experiência premium com o máximo de vantagens.</p>
             <div class="plano-preco">R$ 39,90 <span>/mês</span></div>
@@ -535,9 +542,11 @@
               <li><i class="fa-solid fa-check"></i> Suporte VIP SnapBite</li>
               <li><i class="fa-solid fa-check"></i> Garanta 30 Minutos de antecedência para realizar seus pedidos</li>
             </ul>
-            <a href="pagamento.html?plano=elite" class="plano-btn">
-               Virar Elite
-            </a>
+            <div class="plano-cta">
+              <a href="pagamento.html?plano=elite" class="plano-btn">
+                 Virar Elite
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -556,6 +565,58 @@
   <script src="js/components.js"></script>
   <script src="js/app.js"></script>
   <script type="module" src="js/firebase-auth.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.querySelector('.planos-grid');
+      if (!grid || !window.getBeneficiosPlano) return;
+
+      const beneficios = getBeneficiosPlano();
+      if (!beneficios) return; // sem assinatura ativa: mantém o layout padrão
+
+      const cards = Array.from(grid.querySelectorAll('.plano-card'));
+      const atual = cards.find((c) => c.dataset.plano === beneficios.chave);
+      if (!atual) return;
+
+      const outros = cards.filter((c) => c !== atual);
+
+      grid.classList.add('tem-assinatura');
+
+      // o plano atual sempre ocupa o meio; os outros dois ficam escondidos atrás dele
+      atual.style.order = 2;
+      atual.classList.add('plano-destaque');
+      const tagPadraoAtual = atual.querySelector('.plano-tag:not(.plano-tag-atual)');
+      if (tagPadraoAtual) tagPadraoAtual.style.display = 'none';
+      const tagAtual = atual.querySelector('.plano-tag-atual');
+      if (tagAtual) tagAtual.style.display = 'inline-block';
+
+      outros.forEach((card, i) => {
+        card.style.order = i === 0 ? 1 : 3;
+        card.classList.add('plano-oculto');
+        card.classList.remove('plano-destaque');
+      });
+
+      // troca o botão único pelos dois botões de gerenciamento
+      const cta = atual.querySelector('.plano-cta');
+      if (cta) {
+        cta.innerHTML = `
+          <a href="assinatura.html" class="plano-btn">Gerenciar assinatura</a>
+          <button type="button" class="plano-btn-secundario" id="btn-alterar-plano">Alterar plano</button>
+        `;
+
+        const btnAlterar = document.getElementById('btn-alterar-plano');
+        if (btnAlterar) {
+          btnAlterar.addEventListener('click', () => {
+            outros.forEach((card) => card.classList.add('plano-revelado'));
+            btnAlterar.disabled = true;
+            btnAlterar.style.opacity = '0.6';
+            btnAlterar.style.cursor = 'default';
+            btnAlterar.textContent = 'Compare os planos ao lado';
+          });
+        }
+      }
+    });
+  </script>
 
 
 <style>
@@ -805,6 +866,76 @@
   padding: 4px 10px;
   border-radius: 30px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.plano-tag-atual {
+  background: #fff;
+  color: #E30613;
+}
+
+/* ── ESTADO: cliente já assinante ── */
+.planos-grid.tem-assinatura {
+  position: relative;
+}
+
+.plano-card.plano-oculto {
+  opacity: 0;
+  transform: scale(0.82);
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.6s cubic-bezier(.2,.7,.2,1), transform 0.6s cubic-bezier(.2,.7,.2,1);
+}
+
+.plano-card.plano-oculto:first-child {
+  transform: scale(0.82) translateX(115%);
+}
+
+.plano-card.plano-oculto:last-child {
+  transform: scale(0.82) translateX(-115%);
+}
+
+.planos-grid.tem-assinatura .plano-card.plano-revelado {
+  opacity: 1;
+  transform: none;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+.planos-grid.tem-assinatura .plano-card:not(.plano-oculto) {
+  z-index: 2;
+}
+
+.plano-cta { display: flex; flex-direction: column; gap: 10px; }
+
+.plano-btn-secundario {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+  padding: 13px 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+}
+
+.plano-btn-secundario:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.plano-destaque .plano-btn-secundario {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+}
+
+.plano-destaque .plano-btn-secundario:hover {
+  background: rgba(255, 255, 255, 0.16);
 }
 </style>
 

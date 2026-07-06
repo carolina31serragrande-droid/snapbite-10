@@ -1146,7 +1146,7 @@ function selecionarPagamento(btn) {
     const emojiEl = document.getElementById('wallet-emoji');
     const msgEl = document.getElementById('wallet-msg');
 
-    if (emojiEl) emojiEl.textContent = '🅿️';
+    if (emojiEl) emojiEl.textContent = '🅿';
     if (msgEl) {
       msgEl.textContent = 'Você será direcionado ao PayPal na retirada. Tenha sua conta pronta!';
     }
@@ -1156,7 +1156,10 @@ function selecionarPagamento(btn) {
     const emojiEl = document.getElementById('wallet-emoji');
     const msgEl = document.getElementById('wallet-msg');
 
-    if (emojiEl) emojiEl.textContent = '🟢';
+    if (emojiEl) {
+      emojiEl.innerHTML = '<img src="img/img7.png" alt="Pix" class="icone">';
+    }
+    
     if (msgEl) {
       msgEl.textContent =
         'Pague via PicPay na retirada usando o QR Code que será exibido no balcão.';

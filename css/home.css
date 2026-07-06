@@ -429,26 +429,15 @@
 .preco-antes { color: var(--cinza-borda); font-size: 1rem; text-decoration: line-through; }
 .preco-agora { font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 900; color: var(--vinho); }
 
-/* COMBO ESTUDANTE */
 .destaque-card {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0;
-  transition: none;
+  background: var(--creme);
+  border-radius: var(--radius-xl);
+  padding: 48px 32px;
+  text-align: center;
+  position: relative;
+  border: 2px solid var(--creme-esc);
+  box-shadow: var(--sombra-m);
 }
-
-.destaque-card:hover {
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-.destaque-card .emoji-destaque,
-.destaque-card .emoji-destaque img {
-  animation: none !important;
-  transform: none !important;
-}
-
 .destaque-card .emoji-destaque { font-size: 8rem; margin-bottom: 16px; animation: floatY 3.5s ease-in-out infinite; }
 .destaque-card .rotulo {
   position: absolute;
@@ -1001,29 +990,12 @@
   margin-bottom: 2px;
 }
 
-/* Imagem dentro do circulo*/
 .ps-hero-img {
-  width: 150px;
-  height: 150px;
-  margin: 0 auto 15px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #fff;
-  border: 4px solid var(--oliva);
-  box-shadow: 0 0 20px var(--oliva);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.ps-hero-img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 35px var(--oliva);
-}
-
-.ps-hero-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  font-size: 3.8rem;
+  text-align: center;
   display: block;
+  margin: 4px 0;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
 }
 
 .ps-tag {
@@ -1232,36 +1204,20 @@
   transform: translateY(-8px);
   box-shadow: 0 16px 36px rgba(0,0,0,0.18);
 }
-.img-combo{
-  width: 100%;
-  max-width: 700px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
 
-.destaque-card{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.destaque-card {
+  transition:
+    transform .28s cubic-bezier(.2,.7,.2,1),
+    box-shadow .28s cubic-bezier(.2,.7,.2,1),
+    border-color .28s cubic-bezier(.2,.7,.2,1);
 }
-
 .destaque-card:hover {
   transform: translateY(-6px) scale(1.01);
   box-shadow: 0 22px 48px rgba(0,51,153,0.14);
 }
-
-.emoji-destaque {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.emoji-destaque img {
-  width: 100%;
-  max-width: 550px;
-  height: auto;
-  object-fit: contain;
+.destaque-card .emoji-destaque img {
+  animation: sbSoftFloat 4.4s ease-in-out infinite;
+  transform-origin: center;
 }
 
 .depo-card,

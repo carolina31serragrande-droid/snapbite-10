@@ -15,7 +15,6 @@ const App = {
   metodoPagamento: null,
   pixChaveAtual: null,
   codigoResgate: null,
-  cupomAplicado: null,
 };
 window.App = App;
 
@@ -84,183 +83,6 @@ function sincronizarMenuAutenticado() {
 }
 
 // ────────────────────────────────────────
-// ASSINATURA (PLANOS PAGOS)
-// ────────────────────────────────────────
-const PLANOS_INFO = {
-  start: { nome: 'Plano Start', desconto: 0.05, combosGratisMes: 0, freteGratisInterno: false, preco: 9.90 },
-  pro: { nome: 'Plano Pro', desconto: 0.15, combosGratisMes: 2, freteGratisInterno: true, preco: 19.90 },
-  elite: { nome: 'Plano Elite', desconto: 0.25, combosGratisMes: 4, freteGratisInterno: true, preco: 39.90 },
-};
-
-function getAssinaturasSalvas() {
-  return JSON.parse(localStorage.getItem('snapbite_assinaturas') || '{}');
-}
-
-function salvarAssinaturasSalvas(dados) {
-  localStorage.setItem('snapbite_assinaturas', JSON.stringify(dados));
-}
-
-function getMesAtual() {
-  const hoje = new Date();
-  return `${hoje.getFullYear()}-${hoje.getMonth() + 1}`;
-}
-
-// Retorna a assinatura ativa do usuário (ou null se não tiver/estiver vencida)
-function getAssinaturaUsuario(usuario = App.usuario) {
-  const id = getIdentificadorUsuario(usuario);
-  if (!id) return null;
-
-  const todas = getAssinaturasSalvas();
-  const assinatura = todas[id];
-  if (!assinatura || !PLANOS_INFO[assinatura.plano]) return null;
-
-  if (assinatura.expiraEm && new Date(assinatura.expiraEm) < new Date()) {
-    return null;
-  }
-
-  // Zera o contador de combos grátis quando vira o mês
-  if (assinatura.combosUsados?.mes !== getMesAtual()) {
-    assinatura.combosUsados = { mes: getMesAtual(), qtd: 0 };
-    todas[id] = assinatura;
-    salvarAssinaturasSalvas(todas);
-  }
-
-  return assinatura;
-}
-
-// Ativa/renova a assinatura do usuário logado (chamado após pagamento aprovado)
-function ativarAssinatura(chavePlano, formaPagamento = 'Pix', usuario = App.usuario) {
-  const id = getIdentificadorUsuario(usuario);
-  if (!id || !PLANOS_INFO[chavePlano]) return null;
-
-  const todas = getAssinaturasSalvas();
-  const hoje = new Date();
-  const expiraEm = new Date(hoje);
-  expiraEm.setDate(expiraEm.getDate() + 30);
-
-  todas[id] = {
-    plano: chavePlano,
-    formaPagamento,
-    ativadaEm: hoje.toISOString(),
-    expiraEm: expiraEm.toISOString(),
-    combosUsados: { mes: getMesAtual(), qtd: 0 },
-  };
-
-  salvarAssinaturasSalvas(todas);
-  return todas[id];
-}
-
-// Cancela a assinatura ativa do usuário logado
-function cancelarAssinatura(usuario = App.usuario) {
-  const id = getIdentificadorUsuario(usuario);
-  if (!id) return false;
-
-  const todas = getAssinaturasSalvas();
-  if (!todas[id]) return false;
-
-  delete todas[id];
-  salvarAssinaturasSalvas(todas);
-  return true;
-}
-
-// Retorna os benefícios do plano ativo, prontos para uso na UI e nos cálculos
-function getBeneficiosPlano(usuario = App.usuario) {
-  const assinatura = getAssinaturaUsuario(usuario);
-  if (!assinatura) return null;
-
-  const info = PLANOS_INFO[assinatura.plano];
-  return {
-    ...info,
-    chave: assinatura.plano,
-    formaPagamento: assinatura.formaPagamento || 'Pix',
-    ativadaEm: assinatura.ativadaEm,
-    expiraEm: assinatura.expiraEm,
-    combosRestantes: Math.max(info.combosGratisMes - (assinatura.combosUsados?.qtd || 0), 0),
-  };
-}
-window.getBeneficiosPlano = getBeneficiosPlano;
-window.ativarAssinatura = ativarAssinatura;
-window.cancelarAssinatura = cancelarAssinatura;
-
-// ────────────────────────────────────────
-// CUPONS (uso livre para quem não é assinante)
-// ────────────────────────────────────────
-const CUPONS_VALIDOS = {
-  SNAP10: { percent: 0.10, desc: '10% OFF em todo o pedido' },
-  BEMVINDO5: { percent: 0.05, desc: '5% OFF de boas-vindas' },
-};
-
-function aplicarCupom() {
-  const input = document.getElementById('cupom');
-  if (!input) return;
-
-  const codigo = input.value.trim().toUpperCase();
-  if (!codigo) {
-    showToast('Digite um cupom para aplicar.', 'warning');
-    return;
-  }
-
-  const cupom = CUPONS_VALIDOS[codigo];
-  if (!cupom) {
-    showToast('Cupom não encontrado.', 'error');
-    App.cupomAplicado = null;
-    renderizarCarrinho();
-    return;
-  }
-
-  const beneficios = getBeneficiosPlano();
-  if (beneficios && beneficios.desconto >= cupom.percent) {
-    showToast(`Sua assinatura ${beneficios.nome} já garante um desconto maior! 🎉`, 'info');
-    App.cupomAplicado = null;
-    renderizarCarrinho();
-    return;
-  }
-
-  App.cupomAplicado = { codigo, ...cupom };
-  showToast(`Cupom ${codigo} aplicado! ${cupom.desc} 🎟️`, 'success');
-  renderizarCarrinho();
-}
-window.aplicarCupom = aplicarCupom;
-
-// Resgata um combo grátis do mês (benefício dos planos Pro/Elite)
-function resgatarComboGratis() {
-  if (!App.usuario) {
-    showToast('Faça login para resgatar seu combo grátis.', 'warning');
-    return;
-  }
-
-  const assinatura = getAssinaturaUsuario();
-  const beneficios = getBeneficiosPlano();
-
-  if (!assinatura || !beneficios || beneficios.combosGratisMes === 0) {
-    showToast('Esse benefício é exclusivo para assinantes Pro ou Elite.', 'warning');
-    return;
-  }
-
-  if (beneficios.combosRestantes <= 0) {
-    showToast('Você já usou todos os combos grátis deste mês.', 'warning');
-    return;
-  }
-
-  const todas = getAssinaturasSalvas();
-  const id = getIdentificadorUsuario();
-  todas[id].combosUsados.qtd = (todas[id].combosUsados.qtd || 0) + 1;
-  salvarAssinaturasSalvas(todas);
-
-  adicionarAoCarrinho({
-    id: 'combo-gratis-' + Date.now(),
-    nome: `Combo Grátis (${beneficios.nome})`,
-    desc: 'Benefício da sua assinatura SnapBite',
-    preco: 0,
-    emoji: '🎁',
-  });
-
-  showToast('Combo grátis adicionado ao carrinho! 🎁', 'success');
-  renderizarCarrinho();
-}
-window.resgatarComboGratis = resgatarComboGratis;
-
-// ────────────────────────────────────────
 // UTILIDADES
 // ────────────────────────────────────────
 function formatBRL(valor) {
@@ -296,7 +118,22 @@ function atualizarBadgeCarrinho() {
 // HORÁRIO DE COMPRA
 // ────────────────────────────────────────
 function estaNoHorarioDeCompra() {
-return true;
+  const agora = new Date();
+  const dia = agora.getDay(); // 0 domingo, 6 sábado
+
+  if (dia === 0 || dia === 6) return false;
+
+  const totalMin = agora.getHours() * 60 + agora.getMinutes();
+
+  const inicioManha = 7 * 60;        // 07:00
+  const fimManha = 8 * 60 + 30;      // 08:30
+  const inicioTarde = 11 * 60;       // 11:00
+  const fimTarde = 12 * 60 + 30;     // 12:30
+
+  const dentroManha = totalMin >= inicioManha && totalMin <= fimManha;
+  const dentroTarde = totalMin >= inicioTarde && totalMin <= fimTarde;
+
+  return dentroManha || dentroTarde;
 }
 
 function getMensagemHorarioCompra() {
@@ -569,18 +406,10 @@ function atualizarNavAuth() {
       ? `<img src="${perfil.foto}" alt="Perfil" class="nav-profile-avatar-img">`
       : `<span class="nav-profile-avatar-initial">${inicial}</span>`;
 
-    const beneficios = getBeneficiosPlano(App.usuario);
-    const planoBadgeHtml = beneficios
-      ? `<a href="assinatura.html" class="nav-plano-badge" title="Gerenciar assinatura">${beneficios.nome.replace('Plano ', '')}</a>`
-      : '';
-
     areaLogin.innerHTML = `
-      <div class="nav-profile-wrap">
-        <a href="perfil.html" class="nav-profile-avatar" title="Meu perfil" aria-label="Meu perfil">
-          ${fotoHtml}
-        </a>
-        ${planoBadgeHtml}
-      </div>
+      <a href="perfil.html" class="nav-profile-avatar" title="Meu perfil" aria-label="Meu perfil">
+        ${fotoHtml}
+      </a>
 
       <span style="color:#aaa;font-size:0.85rem;font-weight:700;">
         Olá, <strong style="color:var(--mostarda)">${nomeCurto}</strong>
@@ -710,8 +539,6 @@ async function fazerLogin(tipo, dados = {}) {
       App.pendingProduct = null;
       adicionarAoCarrinho(produtoPendente);
     }
-
-    setTimeout(() => window.location.reload(), 800);
   } catch (erro) {
     showToast(erro || 'Erro ao fazer login. Tente novamente.', 'error');
   }
@@ -768,40 +595,30 @@ function initAuthForms() {
 
   document.getElementById('form-login')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const email = document.getElementById('login-email').value;
     const senha = document.getElementById('login-senha').value;
 
-    if (typeof window.loginComEmailSenha === 'function') {
-      showToast('Conectando...', 'info', 1500);
-      const res = await window.loginComEmailSenha(email, senha);
-      if (!res.ok) showToast(res.msg, 'error');
-    } else {
-      await fazerLogin('login', { email, senha });
-    }
+    await fazerLogin('login', { email, senha });
   });
 
   document.getElementById('form-cadastro')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const nome = document.getElementById('cad-nome').value;
     const email = document.getElementById('cad-email').value;
     const senha = document.getElementById('cad-senha').value;
 
-    if (typeof window.cadastrarComEmailSenha === 'function') {
-      showToast('Criando conta...', 'info', 1500);
-      const res = await window.cadastrarComEmailSenha(nome, email, senha, '', true);
-      if (!res.ok) showToast(res.msg, 'error');
-    } else {
-      await fazerLogin('cadastro', { nome, email, senha });
-    }
+    await fazerLogin('cadastro', { nome, email, senha });
   });
 
   document.getElementById('btn-google')?.addEventListener('click', () => {
     window.loginComGoogleReal?.();
   });
   
-  document.getElementById('btn-microsoft')?.addEventListener('click', () => {
-    window.loginComMicrosoftReal?.();
-});
+  document.getElementById('btn-facebook')?.addEventListener('click', () => {
+    window.loginComFacebookReal?.();
+  });
 
   document.querySelectorAll('.modal-close').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -852,10 +669,9 @@ function adicionarAoCarrinho(produto) {
   }
 
   if (!App.usuario) {
-    localStorage.setItem('snapbite_pending_product', JSON.stringify(produto));
+    App.pendingProduct = produto;
     showToast('⚠️ Você precisa fazer login para comprar!', 'warning', 4000);
-    const paginaAtual = window.location.pathname.split('/').pop() || 'index.html';
-    window.location.href = 'login.html?redirect=' + encodeURIComponent(paginaAtual);
+    openModal('modal-login');
     return;
   }
 
@@ -899,25 +715,7 @@ function alterarQtd(id, delta) {
 function calcularTotais() {
   const subtotal = App.carrinho.reduce((acc, i) => acc + i.preco * i.qtd, 0);
   const taxa = 0;
-
-  const beneficios = getBeneficiosPlano();
-  let descontoPercent = 0;
-  let descontoOrigem = null;
-
-  if (App.cupomAplicado?.percent) {
-    descontoPercent = App.cupomAplicado.percent;
-    descontoOrigem = App.cupomAplicado.codigo;
-  }
-
-  if (beneficios && beneficios.desconto > descontoPercent) {
-    descontoPercent = beneficios.desconto;
-    descontoOrigem = beneficios.nome;
-  }
-
-  const desconto = subtotal * descontoPercent;
-  const total = Math.max(subtotal + taxa - desconto, 0);
-
-  return { subtotal, taxa, desconto, descontoPercent, descontoOrigem, total };
+  return { subtotal, taxa, total: subtotal + taxa };
 }
 
 function renderizarCarrinho() {
@@ -942,9 +740,7 @@ function renderizarCarrinho() {
       .map(
         (item) => `
           <div class="c-item" data-id="${item.id}">
-            ${item.img
-              ? `<div class="c-emoji c-foto"><img src="${item.img}" alt="${item.nome}"></div>`
-              : `<div class="c-emoji">${item.emoji || '🍽️'}</div>`}
+            <div class="c-emoji">${item.emoji}</div>
             <div class="c-info">
               <div class="c-nome">${item.nome}</div>
               <div class="c-desc">${item.desc || ''}</div>
@@ -962,58 +758,15 @@ function renderizarCarrinho() {
       .join('');
   }
 
-  const { subtotal, total, desconto, descontoOrigem } = calcularTotais();
+  const { subtotal, total } = calcularTotais();
   const qtd = App.carrinho.reduce((acc, i) => acc + i.qtd, 0);
 
   if (subtotalEl) subtotalEl.textContent = formatBRL(subtotal);
   if (totalEl) totalEl.textContent = formatBRL(total);
   if (qtdEl) qtdEl.textContent = `${qtd} ${qtd === 1 ? 'item' : 'itens'}`;
 
-  const descontoLinha = document.getElementById('resumo-desconto-linha');
-  const descontoVal = document.getElementById('resumo-desconto');
-  if (descontoLinha && descontoVal) {
-    if (desconto > 0) {
-      descontoLinha.style.display = 'flex';
-      descontoVal.textContent = `− ${formatBRL(desconto)} (${descontoOrigem})`;
-    } else {
-      descontoLinha.style.display = 'none';
-    }
-  }
-
-  renderizarBannerAssinatura();
   atualizarEstadoDosBotoesCompra();
 }
-
-// Mostra o status de assinante e o resgate de combo grátis no carrinho
-function renderizarBannerAssinatura() {
-  const banner = document.getElementById('banner-assinatura-carrinho');
-  if (!banner) return;
-
-  const beneficios = getBeneficiosPlano();
-
-  if (!beneficios) {
-    banner.style.display = 'none';
-    banner.innerHTML = '';
-    return;
-  }
-
-  banner.style.display = 'flex';
-
-  const comboHtml = beneficios.combosGratisMes > 0
-    ? `<button type="button" class="btn-combo-gratis" onclick="resgatarComboGratis()" ${beneficios.combosRestantes <= 0 ? 'disabled' : ''}>
-         ${beneficios.combosRestantes > 0 ? `🎁 Resgatar combo grátis (${beneficios.combosRestantes} restante${beneficios.combosRestantes > 1 ? 's' : ''})` : '🎁 Combos grátis usados este mês'}
-       </button>`
-    : '';
-
-  banner.innerHTML = `
-    <div class="banner-assinatura-info">
-      <span class="banner-assinatura-tag">✅ ${beneficios.nome} ativo</span>
-      <span>${Math.round(beneficios.desconto * 100)}% OFF aplicado automaticamente em todos os pedidos${beneficios.freteGratisInterno ? ' · Frete interno grátis' : ''}</span>
-    </div>
-    ${comboHtml}
-  `;
-}
-window.renderizarBannerAssinatura = renderizarBannerAssinatura;
 
 // ────────────────────────────────────────
 // E-MAIL DO PEDIDO
@@ -1338,23 +1091,13 @@ function initPerfilPage() {
   const senhaEl = document.getElementById('perfil-nova-senha');
   const codigoEl = document.getElementById('perfil-codigo-email');
   const statusCodigoEl = document.getElementById('perfil-codigo-status');
-  const camposCodigoEl = document.getElementById('seguranca-email-campos');
-  const botoesCodigoEl = document.getElementById('seguranca-email-botoes');
-  const descCodigoEl = document.getElementById('seguranca-email-desc');
-  const btnReenviarCodigo = document.getElementById('btn-reenviar-codigo-perfil');
+  const btnEnviarCodigo = document.getElementById('btn-enviar-codigo-perfil');
   const btnVerificarCodigo = document.getElementById('btn-verificar-codigo-perfil');
   const previewEl = document.getElementById('perfil-preview');
   const iniciaisEl = document.getElementById('perfil-iniciais');
 
   const API_BASE = 'https://snapbite-pxn6.onrender.com';
   let codigoPerfilVerificado = false;
-
-  function mascararEmail(email) {
-    const [local, dominio] = (email || '').split('@');
-    if (!local || !dominio) return email || '';
-    const asteriscos = '*'.repeat(Math.max(local.length - 1, 3));
-    return `${local.charAt(0)}${asteriscos}@${dominio}`;
-  }
 
   function setStatusCodigo(msg, ok = false) {
     if (!statusCodigoEl) return;
@@ -1410,50 +1153,29 @@ function initPerfilPage() {
     reader.readAsDataURL(file);
   });
 
-  async function enviarCodigoConfirmacao() {
-    const emailAtual = App.usuario?.email;
-    if (!emailAtual) {
-      showToast('Não encontramos o e-mail da sua conta.', 'error');
-      return;
-    }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-    const btnAtivo = camposCodigoEl.style.display === 'flex' ? btnReenviarCodigo : null;
-    if (btnAtivo) { btnAtivo.disabled = true; btnAtivo.textContent = 'Enviando...'; }
-
-    try {
-      const resp = await fetch(`${API_BASE}/api/enviar-codigo-perfil`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: emailAtual, nome: App.usuario?.nome || 'Usuário SnapBite' })
-      });
-      const dados = await resp.json();
-
-      if (!resp.ok || !dados.ok) throw new Error(dados.erro || 'Falha ao enviar código.');
-
-      codigoPerfilVerificado = false;
-      if (descCodigoEl) descCodigoEl.style.display = 'none';
-      camposCodigoEl.style.display = 'flex';
-      botoesCodigoEl.style.display = 'flex';
-      setStatusCodigo(`Verifique o e-mail ${mascararEmail(emailAtual)}.`, true);
-      showToast('Código enviado ao seu e-mail! 📩', 'success');
-    } catch (err) {
-      console.error(err);
-      const isNetworkError = err instanceof TypeError && err.message.includes('fetch');
-      const msg = isNetworkError
-        ? 'Servidor offline. Aguarde alguns segundos e tente novamente (o Render pode estar iniciando).'
-        : 'Não foi possível enviar o código. Tente novamente em instantes.';
-      setStatusCodigo(msg, false);
-      showToast('Erro ao enviar código de segurança.', 'error');
-    } finally {
-      if (btnAtivo) { btnAtivo.disabled = false; btnAtivo.textContent = 'Reenviar código'; }
-    }
-  }
-
-  async function salvarAlteracoesPerfil() {
     const nome = nomeEl.value.trim();
     const novoEmail = (emailEl.value || '').trim().toLowerCase();
     const novaSenha = senhaEl?.value || '';
     const novaFoto = previewEl.dataset.foto || perfil.foto || '';
+
+    if (nome.length < 2) {
+      showToast('Digite um nome válido.', 'warning');
+      return;
+    }
+
+    if (!codigoPerfilVerificado) {
+      showToast('Verifique o código enviado ao e-mail antes de salvar alterações.', 'warning');
+      setStatusCodigo('Solicite e verifique o código antes de salvar.', false);
+      return;
+    }
+
+    if (novaSenha && novaSenha.length < 6) {
+      showToast('A nova senha precisa ter pelo menos 6 caracteres.', 'warning');
+      return;
+    }
 
     const resultadoAuth = await window.atualizarContaFirebasePerfil?.({
       nome,
@@ -1486,12 +1208,6 @@ function initPerfilPage() {
     if (senhaEl) senhaEl.value = '';
     codigoPerfilVerificado = false;
     if (codigoEl) codigoEl.value = '';
-    camposCodigoEl.style.display = 'none';
-    botoesCodigoEl.style.display = 'none';
-    if (descCodigoEl) {
-      descCodigoEl.style.display = 'block';
-      descCodigoEl.textContent = 'Para alterar nome, e-mail, senha ou foto, clique em "Salvar perfil". Vamos enviar um código de confirmação para o e-mail atual da conta.';
-    }
     setStatusCodigo('Alteração salva. Peça outro código para alterar novamente.', true);
 
     atualizarNavAuth();
@@ -1499,33 +1215,46 @@ function initPerfilPage() {
 
     perfil = getPerfilUsuario();
     atualizarPreview(perfil.foto, perfil.nome);
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const nome = nomeEl.value.trim();
-    const novaSenha = senhaEl?.value || '';
-
-    if (nome.length < 2) {
-      showToast('Digite um nome válido.', 'warning');
-      return;
-    }
-
-    if (novaSenha && novaSenha.length < 6) {
-      showToast('A nova senha precisa ter pelo menos 6 caracteres.', 'warning');
-      return;
-    }
-
-    if (!codigoPerfilVerificado) {
-      await enviarCodigoConfirmacao();
-      return;
-    }
-
-    await salvarAlteracoesPerfil();
   });
 
-  btnReenviarCodigo?.addEventListener('click', () => enviarCodigoConfirmacao());
+
+  btnEnviarCodigo?.addEventListener('click', async () => {
+    const emailAtual = App.usuario?.email;
+    if (!emailAtual) {
+      showToast('Não encontrei o e-mail da sua conta.', 'error');
+      return;
+    }
+
+    btnEnviarCodigo.disabled = true;
+    btnEnviarCodigo.textContent = 'Enviando...';
+
+    try {
+      const resp = await fetch(`${API_BASE}/api/enviar-codigo-perfil`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailAtual, nome: App.usuario?.nome || 'Usuário SnapBite' })
+      });
+      const dados = await resp.json();
+
+      if (!resp.ok || !dados.ok) throw new Error(dados.erro || 'Falha ao enviar código.');
+
+      codigoPerfilVerificado = false;
+      setStatusCodigo(`Código enviado para ${emailAtual}.`, true);
+      showToast('Código enviado ao seu e-mail! 📩', 'success');
+    } catch (err) {
+      console.error(err);
+      // Verifica se é erro de rede (backend offline) ou erro do servidor
+      const isNetworkError = err instanceof TypeError && err.message.includes('fetch');
+      const msg = isNetworkError
+        ? 'Servidor offline. Aguarde alguns segundos e tente novamente (o Render pode estar iniciando).'
+        : 'Não foi possível enviar o código. Tente novamente em instantes.';
+      setStatusCodigo(msg, false);
+      showToast('Erro ao enviar código de segurança.', 'error');
+    } finally {
+      btnEnviarCodigo.disabled = false;
+      btnEnviarCodigo.textContent = 'Enviar código';
+    }
+  });
 
   btnVerificarCodigo?.addEventListener('click', async () => {
     const emailAtual = App.usuario?.email;
@@ -1535,9 +1264,6 @@ function initPerfilPage() {
       showToast('Digite o código de 6 números.', 'warning');
       return;
     }
-
-    btnVerificarCodigo.disabled = true;
-    btnVerificarCodigo.textContent = 'Verificando...';
 
     try {
       const resp = await fetch(`${API_BASE}/api/verificar-codigo-perfil`, {
@@ -1550,16 +1276,13 @@ function initPerfilPage() {
       if (!resp.ok || !dados.ok) throw new Error(dados.erro || 'Código inválido.');
 
       codigoPerfilVerificado = true;
-      setStatusCodigo('Código verificado! Salvando alterações...', true);
-      await salvarAlteracoesPerfil();
+      setStatusCodigo('Código verificado. Agora você pode salvar as alterações.', true);
+      showToast('Código confirmado! 🔐', 'success');
     } catch (err) {
       console.error(err);
       codigoPerfilVerificado = false;
       setStatusCodigo(err.message || 'Código inválido ou expirado.', false);
       showToast('Código inválido ou expirado.', 'error');
-    } finally {
-      btnVerificarCodigo.disabled = false;
-      btnVerificarCodigo.textContent = 'Verificar e salvar';
     }
   });
 
@@ -1790,18 +1513,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initContato();
   carregarCarrinhoUsuario();
   atualizarEstadoDosBotoesCompra();
-
-  if (App.usuario) {
-    const pendente = localStorage.getItem('snapbite_pending_product');
-    if (pendente) {
-      localStorage.removeItem('snapbite_pending_product');
-      try {
-        adicionarAoCarrinho(JSON.parse(pendente));
-      } catch (e) {
-        console.warn('Não foi possível adicionar o produto pendente.', e);
-      }
-    }
-  }
 
   setInterval(atualizarEstadoDosBotoesCompra, 30000);
 

@@ -125,70 +125,147 @@
     .strip-senai-link:hover { background: rgba(200,149,42,0.15); }
 
     /* ── BANNER MAIS LOCAIS ── */
-    .mais-locais-banner {
-      position: relative;
-      margin-top: 32px;
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      background: linear-gradient(130deg, #2D2420 0%, #1C1410 50%, #3a1828 100%);
-      border: 1.5px solid rgba(200,149,42,0.22);
-      box-shadow: 0 20px 60px rgba(28,20,16,0.22), inset 0 1px 0 rgba(255,255,255,0.05);
-      padding: 36px 40px;
+/* ───────── BANNER MAIS LOCAIS ───────── */
+
+.mais-locais-banner{
+    margin-top:32px;
+    padding:38px 42px;
+    border-radius:var(--radius-xl);
+
+    background:
+        radial-gradient(circle at top right,
+            rgba(199,149,42,.12),
+            transparent 45%),
+        linear-gradient(180deg,
+            var(--preto-mid),
+            var(--preto-q));
+
+    border:1px solid rgba(199,149,42,.18);
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.28);
+
+    overflow:hidden;
+    position:relative;
+}
+
+.mais-locais-banner::before{
+    content:"";
+    position:absolute;
+    inset:0;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(199,149,42,.04),
+            transparent
+        );
+
+    pointer-events:none;
+}
+
+.mais-locais-inner{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:30px;
+    position:relative;
+    z-index:2;
+}
+
+.mais-locais-text{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.mais-locais-tag{
+    width:max-content;
+
+    padding:6px 14px;
+
+    border-radius:999px;
+
+    border:1px solid rgba(199,149,42,.35);
+
+    background:rgba(199,149,42,.08);
+
+    color:var(--mostarda);
+
+    font-size:.75rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1.6px;
+}
+
+.mais-locais-text p{
+    margin:0;
+
+    max-width:520px;
+
+    color:rgba(255,255,255,.75);
+
+    line-height:1.7;
+}
+
+.btn-mais-locais{
+
+    background:var(--mostarda);
+
+    color:var(--preto-q);
+
+    padding:15px 28px;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    text-decoration:none;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    transition:.25s;
+}
+
+.btn-mais-locais:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(199,149,42,.35);
+}
+
+.btn-mais-locais-arrow{
+
+    transition:.25s;
+}
+
+.btn-mais-locais:hover
+.btn-mais-locais-arrow{
+
+    transform:translateX(5px);
+}
+
+@media(max-width:700px){
+
+    .mais-locais-inner{
+
+        flex-direction:column;
+
+        align-items:flex-start;
     }
-    .mais-locais-orbs { position: absolute; inset: 0; pointer-events: none; }
-    .orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.55; }
-    .orb1 { width: 280px; height: 280px; background: radial-gradient(circle, rgba(125,29,63,0.9), transparent 70%); top: -80px; left: -60px; }
-    .orb2 { width: 200px; height: 200px; background: radial-gradient(circle, rgba(200,149,42,0.5), transparent 70%); bottom: -60px; right: 80px; }
-    .orb3 { width: 160px; height: 160px; background: radial-gradient(circle, rgba(125,29,63,0.5), transparent 70%); top: 10px; right: 280px; }
-    .mais-locais-grid-bg {
-      position: absolute; inset: 0; pointer-events: none;
-      background-image: linear-gradient(rgba(200,149,42,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(200,149,42,0.05) 1px, transparent 1px);
-      background-size: 32px 32px;
+
+    .btn-mais-locais{
+
+        width:100%;
+
+        justify-content:center;
     }
-    .mais-locais-inner {
-      position: relative; z-index: 2;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 32px; flex-wrap: wrap;
-    }
-    .mais-locais-text { display: flex; flex-direction: column; gap: 8px; }
-    .mais-locais-tag {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
-      color: var(--mostarda); background: rgba(200,149,42,0.12);
-      border: 1px solid rgba(200,149,42,0.25); border-radius: 999px;
-      padding: 4px 12px; width: fit-content;
-    }
-    .mais-locais-text p {
-      color: rgba(253,250,244,0.6); font-size: 0.92rem;
-      line-height: 1.5; max-width: 420px; margin: 0 !important;
-    }
-    .btn-mais-locais {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: linear-gradient(135deg, var(--mostarda) 0%, #e8a820 100%);
-      color: var(--preto-mid); font-family: 'DM Sans', sans-serif;
-      font-weight: 700; font-size: 0.95rem; padding: 14px 28px;
-      border-radius: var(--radius-sm); border: none; cursor: pointer;
-      text-decoration: none; white-space: nowrap; flex-shrink: 0;
-      box-shadow: 0 4px 20px rgba(200,149,42,0.35);
-      transition: transform var(--t), box-shadow var(--t);
-      position: relative; overflow: hidden;
-    }
-    .btn-mais-locais::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
-      border-radius: inherit; pointer-events: none;
-    }
-    .btn-mais-locais:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(200,149,42,0.5), 0 0 0 4px rgba(200,149,42,0.15);
-    }
-    .btn-mais-locais-arrow { font-size: 1.1rem; transition: transform var(--t); }
-    .btn-mais-locais:hover .btn-mais-locais-arrow { transform: translateX(4px); }
-    @media (max-width: 640px) {
-      .mais-locais-banner { padding: 28px 24px; }
-      .mais-locais-inner { flex-direction: column; align-items: flex-start; }
-      .btn-mais-locais { width: 100%; justify-content: center; }
-    }
+
+}
 
     /* ── MAPA + CARDS ── */
     .sec-mapa {
@@ -813,12 +890,6 @@
 
           <!-- ── BOTÃO CONHECER MAIS LOCAIS ── -->
           <div class="mais-locais-banner">
-            <div class="mais-locais-orbs">
-              <div class="orb orb1"></div>
-              <div class="orb orb2"></div>
-              <div class="orb orb3"></div>
-            </div>
-            <div class="mais-locais-grid-bg"></div>
             <div class="mais-locais-inner">
               <div class="mais-locais-text">
                 <span class="mais-locais-tag"><i class="fa-solid fa-map-location-dot" style="color: #c7952a;"></i> Em expansão pelo RJ</span>

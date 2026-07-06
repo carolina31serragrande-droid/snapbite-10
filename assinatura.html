@@ -25,17 +25,23 @@
       justify-content: space-between;
       align-items: flex-start;
       gap: 16px;
-      background: linear-gradient(135deg, var(--vinho), var(--vinho-cl));
-      color: #fff;
-      border-radius: 16px;
-      padding: 22px 24px;
-      margin-bottom: 24px;
+      border-bottom: 1.5px solid var(--creme-esc);
+      padding-bottom: 20px;
+      margin-bottom: 20px;
     }
 
-    .assinatura-plano-nome { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; }
-    .assinatura-plano-status { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
-    .assinatura-plano-preco { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 800; text-align: right; }
-    .assinatura-plano-preco span { display:block; font-size: 0.7rem; font-weight: 600; opacity: 0.85; }
+    .assinatura-plano-nome { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 800; color: var(--vinho); }
+    .assinatura-plano-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--oliva-cl);
+      margin-top: 6px;
+    }
+    .assinatura-plano-preco { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; text-align: right; color: var(--preto-q); }
+    .assinatura-plano-preco span { display:block; font-size: 0.7rem; font-weight: 600; color: var(--cinza-q); }
 
     .assinatura-linha {
       display: flex;
@@ -73,6 +79,35 @@
 
     .combo-progress-track { background: var(--creme-esc); border-radius: 999px; height: 8px; overflow: hidden; margin-top: 6px; }
     .combo-progress-fill { background: var(--mostarda); height: 100%; border-radius: 999px; transition: width 0.3s ease; }
+
+    .btn-trocar-pagamento {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--vinho);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .btn-trocar-pagamento:hover { color: var(--vinho-cl); }
+
+    .forma-pagamento-opcoes { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .forma-pagamento-opcao {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: border-color var(--t);
+    }
+    .forma-pagamento-opcao:hover { border-color: var(--vinho); }
+    .forma-pagamento-opcao.selecionada { border-color: var(--vinho); color: var(--vinho); font-weight: 700; }
+    .forma-pagamento-opcao i { width: 18px; text-align: center; }
   </style>
 </head>
 <body>
@@ -165,7 +200,16 @@
             <div class="assinatura-plano-preco">R$ ${beneficios.preco.toFixed(2).replace('.', ',')}<span>/mês</span></div>
           </div>
 
-          <div class="assinatura-linha"><span>Forma de pagamento</span><strong>${formaPagamento}</strong></div>
+          <div class="assinatura-linha">
+            <span>Forma de pagamento</span>
+            <span style="display:flex;align-items:center;gap:12px;">
+              <strong>${formaPagamento}</strong>
+              <button type="button" class="btn-trocar-pagamento" onclick="abrirTrocaPagamento()">Alterar</button>
+            </span>
+          </div>
+          <div id="forma-pagamento-editor" style="display:none;">
+            <div class="forma-pagamento-opcoes" id="forma-pagamento-opcoes"></div>
+          </div>
           <div class="assinatura-linha"><span>Ativada em</span><strong>${formatarData(beneficios.ativadaEm)}</strong></div>
           <div class="assinatura-linha"><span>Próxima renovação</span><strong>${formatarData(beneficios.expiraEm)}</strong></div>
           ${comboHtml}
@@ -174,7 +218,7 @@
         <div class="assinatura-card">
           <h3 style="font-family:'Playfair Display', serif; font-size:1.1rem; margin-bottom:6px;">Benefícios inclusos</h3>
           <ul class="assinatura-beneficios">
-            ${beneficiosLista.map((b) => `<li><i class="fa-solid fa-circle-check"></i> ${b}</li>`).join('')}
+            ${beneficiosLista.map((b) => `<li><i class="fa-solid fa-check"></i> ${b}</li>`).join('')}
           </ul>
         </div>
 
@@ -183,6 +227,44 @@
           <button type="button" class="btn-cancelar-assinatura" onclick="confirmarCancelamento()">Cancelar assinatura</button>
         </div>
       `;
+    }
+
+    const OPCOES_PAGAMENTO = [
+      { chave: 'Pix', label: 'Pix Automático', icone: 'fa-qrcode' },
+      { chave: 'Cartão de Crédito', label: 'Cartão de Crédito', icone: 'fa-credit-card' },
+      { chave: 'Cartão de Débito', label: 'Cartão de Débito', icone: 'fa-credit-card' },
+    ];
+
+    function abrirTrocaPagamento() {
+      const editor = document.getElementById('forma-pagamento-editor');
+      const opcoesContainer = document.getElementById('forma-pagamento-opcoes');
+      if (!editor || !opcoesContainer) return;
+
+      const aberto = editor.style.display !== 'none';
+      if (aberto) {
+        editor.style.display = 'none';
+        return;
+      }
+
+      const beneficios = getBeneficiosPlano();
+      const atual = beneficios ? beneficios.formaPagamento : null;
+
+      opcoesContainer.innerHTML = OPCOES_PAGAMENTO.map((op) => `
+        <div class="forma-pagamento-opcao ${op.chave === atual ? 'selecionada' : ''}" onclick="selecionarFormaPagamento('${op.chave}')">
+          <i class="fa-solid ${op.icone}"></i>
+          <span>${op.label}</span>
+        </div>
+      `).join('');
+
+      editor.style.display = 'block';
+    }
+
+    function selecionarFormaPagamento(novaForma) {
+      if (window.alterarFormaPagamento) {
+        alterarFormaPagamento(novaForma);
+      }
+      if (window.showToast) showToast('Forma de pagamento atualizada.', 'success');
+      renderizarAssinatura();
     }
 
     function confirmarCancelamento() {

@@ -368,13 +368,17 @@ async function loginComEmailSenha(email, senha, lembrar = false) {
       'auth/invalid-credential': 'E-mail ou senha incorretos.',
       'auth/too-many-requests': 'Muitas tentativas. Aguarde 30 minutos.'
     };
-  
+  }
+  } catch (err) {
+
+    console.error(err.code, err.message);
+
     return {
-      ok: false,
-      msg: authErrorMap[err.code] || 'Erro ao entrar'
+        ok: false,
+        msg: err.code + " | " + err.message
     };
-  }
-  }
+}
+  
 
 
 async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermos) {
@@ -393,7 +397,12 @@ async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermo
       'auth/invalid-email':        'E-mail inválido.',
       'auth/weak-password':        'Senha muito fraca. Use ao menos 6 caracteres.',
     };
-    return { ok: false, msg: msgs[err.code] || 'Erro ao criar conta. Tente novamente.' };
+    console.error(err.code, err.message);
+
+    return {
+      ok: false,
+      msg: err.code + " | " + err.message
+    };
   }
 }
 

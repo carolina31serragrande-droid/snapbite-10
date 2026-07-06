@@ -621,15 +621,32 @@ function mockServerAuth(tipo, dados) {
     setTimeout(() => {
       const usuarios = JSON.parse(localStorage.getItem('snapbite_usuarios') || '[]');
 
-      if (tipo === 'google') {
-        resolve({
-          nome: 'Estudante Google',
-          email: 'aluno@gmail.com',
-          avatar: '🧑‍🎓',
-          provider: 'google',
-        });
-        return;
-      }
+if (tipo === 'google') {
+
+  const emailGoogle = 'aluno@gmail.com';
+
+  const usuario = usuarios.find(
+    u => u.email.toLowerCase() === emailGoogle.toLowerCase()
+  );
+
+  if (usuario) {
+    resolve({
+      nome: usuario.nome,
+      email: usuario.email,
+      avatar: usuario.avatar,
+      provider: 'google'
+    });
+  } else {
+    resolve({
+      nome: 'Estudante Google',
+      email: emailGoogle,
+      avatar: '🧑‍🎓',
+      provider: 'google'
+    });
+  }
+
+  return;
+}
 
       if (tipo === 'facebook') {
         resolve({
@@ -1156,10 +1173,7 @@ function selecionarPagamento(btn) {
     const emojiEl = document.getElementById('wallet-emoji');
     const msgEl = document.getElementById('wallet-msg');
 
-    if (emojiEl) {
-      emojiEl.innerHTML = '<img src="img/img7.png" alt="Pix" class="icone">';
-    }
-    
+    if (emojiEl) emojiEl.textContent = '🟢';
     if (msgEl) {
       msgEl.textContent =
         'Pague via PicPay na retirada usando o QR Code que será exibido no balcão.';

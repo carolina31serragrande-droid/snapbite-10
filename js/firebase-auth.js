@@ -368,43 +368,35 @@ async function loginComEmailSenha(email, senha, lembrar = false) {
       'auth/invalid-credential': 'E-mail ou senha incorretos.',
       'auth/too-many-requests': 'Muitas tentativas. Aguarde 30 minutos.'
     };
-  }
-  } catch (err) {
-
-    console.error(err.code, err.message);
-
-    return {
-        ok: false,
-        msg: err.code + " | " + err.message
-    };
-}
   
-
-
-async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermos) {
-  try {
-    const result = await createUserWithEmailAndPassword(auth, email, senha);
-    await updateProfile(result.user, { displayName: nome });
-    await sendEmailVerification(result.user);
-    salvarCadastroExtra(result.user.uid, { telefone, aceitouTermos });
-    const usuario = syncUsuarioFirebase(result.user);
-    window.showToast?.(`Conta criada! Bem-vindo(a), ${nome.split(' ')[0]}! ✅`, 'success');
-    _redirecionarAposLogin();
-    return { ok: true };
-  } catch (err) {
-    const msgs = {
-      'auth/email-already-in-use': 'Este e-mail já está cadastrado.',
-      'auth/invalid-email':        'E-mail inválido.',
-      'auth/weak-password':        'Senha muito fraca. Use ao menos 6 caracteres.',
-    };
-    console.error(err.code, err.message);
-
     return {
       ok: false,
       msg: err.code + " | " + err.message
     };
   }
-}
+  }
+
+
+  async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermos) {
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, senha);
+      await updateProfile(result.user, { displayName: nome });
+      await sendEmailVerification(result.user);
+      salvarCadastroExtra(result.user.uid, { telefone, aceitouTermos });
+      const usuario = syncUsuarioFirebase(result.user);
+      window.showToast?.(`Conta criada! Bem-vindo(a), ${nome.split(' ')[0]}! ✅`, 'success');
+      _redirecionarAposLogin();
+      return { ok: true };
+  
+    } catch (err) {
+      console.error(err.code, err.message);
+  
+      return {
+        ok: false,
+        msg: err.code + " | " + err.message
+      };
+    }
+  }
 
 // ─────────────────────────────────────────────────────
 // RECUPERAR SENHA com rate limiting progressivo

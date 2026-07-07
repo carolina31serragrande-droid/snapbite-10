@@ -48,9 +48,15 @@ const respostas = [
     resposta: '😊 De nada! Qualquer dúvida é só perguntar. Bom lanche!'
   },
   {
-    palavras: ['tchau', 'até', 'flw', 'falou'],
+    palavras: ['tchau', 'até', 'flw', 'falou', 'vlww', 'fé'],
     resposta: '👋 Até mais! Aproveite seu lanche no SnapBite! 🍔'
   }
+];
+const respostaif = [
+  {
+    palavras: ['oi', 'olá', 'ola', 'ei', 'eai', 'e aí', 'bom dia', 'boa tarde'],
+    resposta: 'Olá! Como posso ajudá-lo?'
+  },
 ];
 
 const respostaPadrao = '🤔 Não entendi bem sua pergunta. Você pode perguntar sobre lanches, combos, horários, bebidas ou preços!';

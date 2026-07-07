@@ -3,6 +3,20 @@
    Login local, horários de compra e envio de e-mail do pedido
 */
 
+console.clear();
+
+console.log(
+  "%c🚨 PARE!",
+  "color:#ff0000;font-size:40px;font-weight:bold;"
+);
+
+console.log(
+  "%cNão copie e cole nenhum código nem execute nenhum script aqui.\n\n" +
+  "Isso pode permitir que terceiros acessem sua conta, alterem informações ou realizem ações sem sua autorização.\n\n" +
+  "Se alguém pediu para você colar um código neste Console, é muito provável que seja uma tentativa de golpe.",
+  "font-size:16px;color:#fff;background:#b71c1c;padding:12px;border-radius:6px;"
+);
+
 'use strict';
 
 // ────────────────────────────────────────

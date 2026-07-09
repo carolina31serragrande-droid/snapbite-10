@@ -900,7 +900,7 @@ document.body.insertAdjacentHTML('afterbegin', `
 
     <div class="metodos-grid metodos-grid-bonito">
       <button class="metodo-btn" data-metodo="pix" onclick="selecionarPagamento(this)" type="button">
-        <span class="metodo-icon">🟩</span>
+        <span class="metodo-icon"><img src="https://artpoin.com/wp-content/uploads/2023/09/artpoin-logo-pix.png"></span>
         <div class="metodo-info">
           <span class="metodo-nome">PIX</span>
           <span class="metodo-desc">Pagamento antecipado</span>
@@ -918,7 +918,7 @@ document.body.insertAdjacentHTML('afterbegin', `
       </button>
 
       <button class="metodo-btn" data-metodo="paypal" onclick="selecionarPagamento(this)" type="button">
-        <span class="metodo-icon">🅿️</span>
+        <span class="metodo-icon"><img src="https://pngimg.com/uploads/paypal/paypal_PNG7.png" width="150px" height="80px"></span>
         <div class="metodo-info">
           <span class="metodo-nome">PayPal</span>
           <span class="metodo-desc">Pagamento na retirada</span>
